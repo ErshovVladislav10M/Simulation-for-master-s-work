@@ -1,14 +1,12 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
-from measurements.measurement import Measurement
-from words.area import Area
+from worlds.area import Area
 
 
 class AbstractSensor(ABC):
 
-    def __init__(self, area: Area):
-        self.area = area
-
-    @abstractmethod
-    def get_measurement(self) -> list[Measurement]:
-        pass
+    def __init__(self, world: World, area: Area):
+        self._world = world
+        self._area = area
+        self._measurements = []
+        self._initial_q = initial_q
