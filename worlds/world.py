@@ -5,6 +5,7 @@ from sensors.camera import Camera
 from uavs.uav import UAV
 from worlds.abstract_world import AbstractWorld
 from worlds.area import Area
+from worlds.drawer import Drawer2D
 
 
 class World(AbstractWorld, ABC):
@@ -13,6 +14,7 @@ class World(AbstractWorld, ABC):
         super().__init__(num_steps=num_steps, create_step_images=create_step_images)
         self.cameras = []
         self.uavs = []
+        self._drawer = Drawer2D(self.cameras, self.uavs)
 
     def run(self) -> None:
         for _ in range(self._num_steps):
@@ -23,7 +25,7 @@ class World(AbstractWorld, ABC):
 
             self.rec_messages()
             self.sent_messages()
-            # self.drawer.draw_plane(self.num_steps, step)
+            self._drawer.draw_plane(self._num_steps, self.actual_step)
 
     def rec_messages(self) -> None:
         pass
@@ -41,8 +43,8 @@ class World(AbstractWorld, ABC):
     def get_uavs(self) -> list[UAV]:
         return self.uavs
 
-    def create_camera(self, area: Area, initial_q) -> Camera:
-        camera = Camera(self, area=area, initial_q=initial_q)
+    def create_camera(self, area: Area, position: Cube, initial_q, obsolescence_time: int) -> Camera:
+        camera = Camera(self, area=area, position=position, initial_q=initial_q, obsolescence_time=obsolescence_time)
         self.cameras.append(camera)
 
         return camera

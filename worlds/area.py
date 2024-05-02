@@ -9,3 +9,7 @@ class Area:
 
     def contain(self, uav: UAV) -> bool:
         return self._cubes.count(uav.get_position()) > 0
+
+    @property
+    def cubes(self):
+        return self._cubes
