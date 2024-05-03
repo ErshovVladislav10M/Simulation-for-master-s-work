@@ -9,14 +9,14 @@ from sensors.camera import Camera
 from uavs.uav import UAV
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
-from worlds.square.build import SquareBuild
+from worlds.square.building import SquareBuilding
 
 
 class SquareDrawer:
 
     def __init__(
         self,
-        builds: list[SquareBuild],
+        buildings: list[SquareBuilding],
         cameras: list[Camera],
         uavs: list[UAV],
         world_vertices: list[Coordinate],
@@ -24,7 +24,7 @@ class SquareDrawer:
         path_to_results: str = "results",
         create_step_images: bool = True
     ):
-        self._builds = builds
+        self._buildings = buildings
         self._cameras = cameras
         self._uavs = uavs
         self._world_vertices = world_vertices
@@ -75,7 +75,7 @@ class SquareDrawer:
         sub_plot = figure.add_subplot()
 
         self._draw_world_vertices(sub_plot)
-        self._draw_build(sub_plot)
+        self._draw_building(sub_plot)
         self._draw_cameras(sub_plot)
         self._draw_uavs(sub_plot)
 
@@ -129,8 +129,8 @@ class SquareDrawer:
         )
         sub_plot.add_line(line)
 
-    def _draw_build(self, sub_plot: Axes) -> None:
-        for build in self._builds:
+    def _draw_building(self, sub_plot: Axes) -> None:
+        for build in self._buildings:
             coordinate = build.coordinate
             polygon = RegularPolygon(
                 xy=(coordinate.x, coordinate.y),

@@ -1,4 +1,4 @@
-from generators.square.build_generator import SquareBuildGenerator
+from generators.square.building_generator import SquareBuildingGenerator
 from generators.square.world_generator import SquareWorldGenerator
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
@@ -6,7 +6,7 @@ from worlds.cube import Cube
 
 
 if __name__ == "__main__":
-    build_generator = SquareBuildGenerator(
+    build_generator = SquareBuildingGenerator(
         min_x=-100,
         max_x=100,
         min_y=-100,
@@ -17,7 +17,7 @@ if __name__ == "__main__":
         average_side=15,
         min_side=10,
         max_side=50,
-        num_of_build=50
+        num_of_buildings=50
     )
     world_vertices = [
         Coordinate(-70, -70),
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         create_step_images=True,
         world_vertices=world_vertices,
         cube_side_size=1,
-        build_generator=build_generator
+        building_generator=build_generator
     ).create()
 
     # route = [Cube(x, x, x) for x in range(8)]

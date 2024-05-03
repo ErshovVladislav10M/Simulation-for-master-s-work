@@ -1,7 +1,7 @@
 from worlds.coodrinate import Coordinate
 
 
-class SquareBuild:
+class SquareBuilding:
 
     def __init__(self, coordinate: Coordinate, height: int, side: int):
         self.coordinate = coordinate
