@@ -6,10 +6,11 @@ from sensors.camera import Camera
 from uavs.uav import UAV
 from worlds.abstract_world import AbstractWorld
 from worlds.area import Area
-from worlds.drawer import Drawer2D
+from worlds.square.drawer import SquareDrawer
+from worlds.square.build import SquareBuild
 
 
-class World(AbstractWorld, ABC):
+class SquareWorld(AbstractWorld, ABC):
 
     def __init__(
         self,
@@ -19,11 +20,18 @@ class World(AbstractWorld, ABC):
         cube_side_size: float
     ):
         super().__init__(num_steps, create_step_images)
+        self.builds = []
         self.cameras = []
         self.uavs = []
         self._vertices = vertices
         self._cube_side_size = cube_side_size
-        self._drawer = Drawer2D(self.cameras, self.uavs, vertices, cube_side_size)
+        self._drawer = SquareDrawer(
+            self.builds,
+            self.cameras,
+            self.uavs,
+            vertices,
+            cube_side_size
+        )
 
     def run(self) -> None:
         for _ in range(self._num_steps):
@@ -51,6 +59,12 @@ class World(AbstractWorld, ABC):
 
     def get_uavs(self) -> list[UAV]:
         return self.uavs
+
+    def create_build(self, coordinate: Coordinate, height: int, side: int) -> SquareBuild:
+        build = SquareBuild(coordinate, height, side)
+        self.builds.append(build)
+
+        return build
 
     def create_camera(self, area: Area, position: Cube, initial_q, obsolescence_time: int) -> Camera:
         camera = Camera(

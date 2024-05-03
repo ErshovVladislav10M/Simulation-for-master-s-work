@@ -9,12 +9,14 @@ from sensors.camera import Camera
 from uavs.uav import UAV
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
+from worlds.square.build import SquareBuild
 
 
-class Drawer2D:
+class SquareDrawer:
 
     def __init__(
         self,
+        builds: list[SquareBuild],
         cameras: list[Camera],
         uavs: list[UAV],
         world_vertices: list[Coordinate],
@@ -22,6 +24,7 @@ class Drawer2D:
         path_to_results: str = "results",
         create_step_images: bool = True
     ):
+        self._builds = builds
         self._cameras = cameras
         self._uavs = uavs
         self._world_vertices = world_vertices
@@ -72,17 +75,18 @@ class Drawer2D:
         sub_plot = figure.add_subplot()
 
         self._draw_world_vertices(sub_plot)
+        self._draw_build(sub_plot)
         self._draw_cameras(sub_plot)
         self._draw_uavs(sub_plot)
 
         plt.xlabel("Step number: " + str(step), fontsize="xx-large")
         sub_plot.set(
-            xlim=(-10, 10),
-            ylim=(-10, 10),
+            xlim=(-200, 200),
+            ylim=(-200, 200),
         )
 
         # plt.xticks([])
-        plt.yticks([])
+        # plt.yticks([])
         plt.legend(loc="upper right", ncol=2, fontsize="x-large")
 
         # plt.subplot(1, 2, 2)
@@ -124,6 +128,21 @@ class Drawer2D:
             label="City borders"
         )
         sub_plot.add_line(line)
+
+    def _draw_build(self, sub_plot: Axes) -> None:
+        for build in self._builds:
+            coordinate = build.coordinate
+            polygon = RegularPolygon(
+                xy=(coordinate.x, coordinate.y),
+                numVertices=4,
+                radius=math.sqrt(2 * build.side * build.side) / 2,
+                orientation=0.25 * math.pi,
+                edgecolor="brown",
+                facecolor="white",
+                hatch="xx"
+            )
+
+            sub_plot.add_patch(polygon)
 
     def _draw_area(self, sub_plot: Axes, area: Area, id: int) -> None:
         for cube in area.cubes:
