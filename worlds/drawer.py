@@ -1,9 +1,8 @@
 import math
-from collections import OrderedDict
 
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
-from matplotlib.patches import RegularPolygon, Circle
+from matplotlib.patches import RegularPolygon, Circle, Arrow
 
 from sensors.camera import Camera
 from uavs.uav import UAV
@@ -105,13 +104,15 @@ class Drawer2D:
         )
         plt.close()
 
-    def _draw_area(self, sub_plot: Axes, area: Area) -> None:
+    def _draw_area(self, sub_plot: Axes, area: Area, id: int) -> None:
         for cube in area.cubes:
             polygon = RegularPolygon(
                 xy=(cube.x, cube.y),
-                numVertices=6,
-                radius=0.5,
-                edgecolor=self._colors[0],
+                numVertices=4,
+                radius=math.sqrt(2) / 2,
+                orientation=0.25 * math.pi,
+                edgecolor=self._colors[id],
+                linewidth=0,
                 facecolor="white",
                 hatch="..",
             )
@@ -120,34 +121,34 @@ class Drawer2D:
 
     def _draw_cameras(self, sub_plot: Axes) -> None:
         for camera in self._cameras:
-            position = camera.position
+            self._draw_area(sub_plot, camera._area, camera.id)
 
+            position = camera.position
             circle = Circle(
                 xy=(position.x, position.y),
-                radius=0.5,
-                edgecolor="black",
+                radius=0.2,
+                edgecolor=self._colors[camera.id],
             )
-            circle.set_label("Camera")
-
+            circle.set_label("Camera " + str(camera.id))
             sub_plot.add_patch(circle)
-
-            self._draw_area(sub_plot, camera._area)
 
     def _draw_uavs(self, sup_plot: Axes):
         for uav in self._uavs:
             position = uav.get_position()
-            if position is None:
+            next_position = uav.get_next_position()
+            if position is None or next_position is None:
                 continue
 
-            polygon = RegularPolygon(
-                xy=(position.x, position.y),
-                numVertices=6,
-                radius=0.5,
-                edgecolor="lightgray",
-                facecolor="lightgray",
+            arrow = Arrow(
+                x=position.x,
+                y=position.y,
+                dx=next_position.x - position.x,
+                dy=next_position.y - position.y,
+                width=1,
+                facecolor="red",
             )
 
-            sup_plot.add_patch(polygon)
+            sup_plot.add_patch(arrow)
 
     # def get_accuracy(self) -> int:
     #     sum_accuracy = 0

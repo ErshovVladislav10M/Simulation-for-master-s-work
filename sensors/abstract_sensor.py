@@ -1,6 +1,7 @@
 from abc import ABC
 
 from worlds.area import Area
+from worlds.world import World
 
 
 class AbstractSensor(ABC):
@@ -9,4 +10,3 @@ class AbstractSensor(ABC):
         self._world = world
         self._area = area
         self._measurements = []
-        self._initial_q = initial_q

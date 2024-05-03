@@ -6,7 +6,16 @@ from worlds.area import Area
 
 class Camera:
 
-    def __init__(self, world: AbstractWorld, area: Area, position: Cube, initial_q: float, obsolescence_time: int):
+    def __init__(
+        self,
+        id: int,
+        world: AbstractWorld,
+        area: Area,
+        position: Cube,
+        initial_q: float,
+        obsolescence_time: int
+    ):
+        self.id = id
         self._world = world
         self._area = area
         self.position = position

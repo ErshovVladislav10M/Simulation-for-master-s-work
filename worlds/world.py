@@ -44,7 +44,14 @@ class World(AbstractWorld, ABC):
         return self.uavs
 
     def create_camera(self, area: Area, position: Cube, initial_q, obsolescence_time: int) -> Camera:
-        camera = Camera(self, area=area, position=position, initial_q=initial_q, obsolescence_time=obsolescence_time)
+        camera = Camera(
+            id=len(self.cameras),
+            world=self,
+            area=area,
+            position=position,
+            initial_q=initial_q,
+            obsolescence_time=obsolescence_time
+        )
         self.cameras.append(camera)
 
         return camera

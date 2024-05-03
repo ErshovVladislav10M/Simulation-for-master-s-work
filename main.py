@@ -9,7 +9,12 @@ if __name__ == "__main__":
     route = [Cube(x, x, x) for x in range(8)]
     world.create_uav(route=route)
 
-    area = Area([Cube(1, 1, 1), Cube(2, 2, 2), Cube(3, 3, 3)])
+    area_cubes = []
+    for i in range(1, 8):
+        for j in range(i, 8):
+            # for k in range(8):
+            area_cubes.append(Cube(i, j, 0))
+    area = Area(area_cubes)
     camera = world.create_camera(area=area, position=Cube(0, 1, 1), initial_q=0.3, obsolescence_time=4)
 
     world.run()

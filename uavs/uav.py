@@ -21,3 +21,9 @@ class UAV:
             return self.route[self.step]
         else:
             return None
+
+    def get_next_position(self) -> Cube | None:
+        if len(self.route) > self.step + 1:
+            return self.route[self.step + 1]
+        else:
+            return None
