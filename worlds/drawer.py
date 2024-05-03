@@ -2,11 +2,13 @@ import math
 
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
+from matplotlib.lines import Line2D
 from matplotlib.patches import RegularPolygon, Circle, Arrow
 
 from sensors.camera import Camera
 from uavs.uav import UAV
 from worlds.area import Area
+from worlds.coodrinate import Coordinate
 
 
 class Drawer2D:
@@ -15,11 +17,15 @@ class Drawer2D:
         self,
         cameras: list[Camera],
         uavs: list[UAV],
+        world_vertices: list[Coordinate],
+        cube_side_size: float,
         path_to_results: str = "results",
         create_step_images: bool = True
     ):
         self._cameras = cameras
         self._uavs = uavs
+        self._world_vertices = world_vertices
+        self._cube_side_size = cube_side_size
 
         self._path_to_results = path_to_results
         self._create_step_images = create_step_images
@@ -65,6 +71,7 @@ class Drawer2D:
         # sub_plot = figure.add_subplot(1, 2, 1)
         sub_plot = figure.add_subplot()
 
+        self._draw_world_vertices(sub_plot)
         self._draw_cameras(sub_plot)
         self._draw_uavs(sub_plot)
 
@@ -74,7 +81,7 @@ class Drawer2D:
             ylim=(-10, 10),
         )
 
-        plt.xticks([])
+        # plt.xticks([])
         plt.yticks([])
         plt.legend(loc="upper right", ncol=2, fontsize="x-large")
 
@@ -103,6 +110,20 @@ class Drawer2D:
             dpi=300
         )
         plt.close()
+
+    def _draw_world_vertices(self, sub_plot: Axes) -> None:
+        xdata = [vertex.x for vertex in self._world_vertices]
+        xdata.append(self._world_vertices[0].x)
+        ydata = [vertex.y for vertex in self._world_vertices]
+        ydata.append(self._world_vertices[0].y)
+
+        line = Line2D(
+            xdata=xdata,
+            ydata=ydata,
+            color="black",
+            label="City borders"
+        )
+        sub_plot.add_line(line)
 
     def _draw_area(self, sub_plot: Axes, area: Area, id: int) -> None:
         for cube in area.cubes:

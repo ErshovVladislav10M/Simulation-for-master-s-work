@@ -1,6 +1,7 @@
 from abc import ABC
 
-from measurements.cube import Cube
+from worlds.coodrinate import Coordinate
+from worlds.cube import Cube
 from sensors.camera import Camera
 from uavs.uav import UAV
 from worlds.abstract_world import AbstractWorld
@@ -10,11 +11,19 @@ from worlds.drawer import Drawer2D
 
 class World(AbstractWorld, ABC):
 
-    def __init__(self, num_steps: int, create_step_images: bool):
-        super().__init__(num_steps=num_steps, create_step_images=create_step_images)
+    def __init__(
+        self,
+        num_steps: int,
+        create_step_images: bool,
+        vertices: list[Coordinate],
+        cube_side_size: float
+    ):
+        super().__init__(num_steps, create_step_images)
         self.cameras = []
         self.uavs = []
-        self._drawer = Drawer2D(self.cameras, self.uavs)
+        self._vertices = vertices
+        self._cube_side_size = cube_side_size
+        self._drawer = Drawer2D(self.cameras, self.uavs, vertices, cube_side_size)
 
     def run(self) -> None:
         for _ in range(self._num_steps):

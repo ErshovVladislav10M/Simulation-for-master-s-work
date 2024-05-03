@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from measurements.cube import Cube
+from worlds.cube import Cube
 
 
 class UAV:

@@ -1,10 +1,17 @@
-from measurements.cube import Cube
+from generators.world_generator import WorldGenerator
 from worlds.area import Area
-from worlds.world import World
+from worlds.coodrinate import Coordinate
+from worlds.cube import Cube
 
 
 if __name__ == "__main__":
-    world = World(num_steps=10, create_step_images=True)
+    world_vertices = [Coordinate(-7, -7), Coordinate(7, -7), Coordinate(7, 7), Coordinate(-7, 7)]
+    world = WorldGenerator(
+        num_steps=10,
+        create_step_images=True,
+        world_vertices=world_vertices,
+        cube_side_size=1
+    ).create()
 
     route = [Cube(x, x, x) for x in range(8)]
     world.create_uav(route=route)

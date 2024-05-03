@@ -1,4 +1,4 @@
-from measurements.cube import Cube
+from worlds.cube import Cube
 from uavs.uav import UAV
 
 

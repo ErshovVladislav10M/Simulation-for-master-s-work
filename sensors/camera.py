@@ -1,4 +1,4 @@
-from measurements.cube import Cube
+from worlds.cube import Cube
 from measurements.measurement import Measurement
 from worlds.abstract_world import AbstractWorld
 from worlds.area import Area
