@@ -2,7 +2,8 @@ import numpy as np
 from scipy.stats import norm
 
 from generators.abstract_generator import AbstractGenerator
-from sensors.camera import Camera
+from generators.square.simple_camera_area_generator import SimpleCameraAreaGenerator
+from sensors.cameras.camera import Camera
 from worlds.abstract_world import AbstractWorld
 from worlds.coodrinate import Coordinate
 
@@ -11,7 +12,6 @@ class CameraGenerator(AbstractGenerator):
 
     def __init__(
         self,
-        world: AbstractWorld,
         min_x: int,
         max_x: int,
         min_y: int,
@@ -23,7 +23,6 @@ class CameraGenerator(AbstractGenerator):
         obsolescence_time: int,
         num_of_cameras: int
     ):
-        self._world = world
         self._min_x = min_x
         self._max_x = max_x
         self._min_y = min_y
@@ -36,6 +35,9 @@ class CameraGenerator(AbstractGenerator):
         self._num_of_buildings = num_of_cameras
 
     def create(self) -> list[Camera]:
+        return []
+
+    def create1(self, world: AbstractWorld) -> list[Camera]:
         possible_heights = np.arange(
             self._min_height,
             self._max_height,
@@ -54,10 +56,9 @@ class CameraGenerator(AbstractGenerator):
         return [
             Camera(
                 id=id,
-                world=self._world,
-                area=None,
+                world=world,
+                area=SimpleCameraAreaGenerator(Coordinate(x, y, height), radius=5, cube_side=1).create(),
                 coordinate=Coordinate(x, y, height),
-                height=height,
                 initial_q=self._initial_q,
                 obsolescence_time=self._obsolescence_time
             )

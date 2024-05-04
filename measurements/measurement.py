@@ -1,4 +1,4 @@
-from worlds.cube import Cube
+from sensors.cube import Cube
 
 
 class Measurement:

@@ -1,5 +1,6 @@
 from generators.abstract_generator import AbstractGenerator
 from generators.square.building_generator import SquareBuildingGenerator
+from generators.square.camera_generator import CameraGenerator
 from worlds.abstract_world_object import AbstractWorldObject
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
@@ -14,13 +15,15 @@ class SquareWorldGenerator(AbstractGenerator):
         create_step_images: bool,
         exclude_areas: list[Area],
         cube_side_size: float,
-        building_generator: SquareBuildingGenerator
+        building_generator: SquareBuildingGenerator,
+        camera_generator: CameraGenerator
     ):
         self._num_steps = num_steps
         self._create_step_images = create_step_images
         self._exclude_areas = exclude_areas
         self._cube_side_size = cube_side_size
         self._building_generator = building_generator
+        self._camera_generator = camera_generator
 
     def create(self) -> SquareWorld:
         world = SquareWorld(
@@ -34,10 +37,13 @@ class SquareWorldGenerator(AbstractGenerator):
             if self._check_on_contains(building.coordinate, building.side, self._exclude_areas):
                 continue
 
-            if self._check_on_contains(building.coordinate, building.side, world.get_buildings()):
+            if self._check_on_contains(building.coordinate, building.side, world.buildings):
                 continue
 
-            world.get_buildings().append(building)
+            world.buildings.append(building)
+
+        for camera in self._camera_generator.create1(world):
+            world.cameras.append(camera)
 
         return world
 

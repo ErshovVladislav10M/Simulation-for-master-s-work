@@ -2,7 +2,7 @@
 from measurements.measurement import Measurement
 from worlds.abstract_world import AbstractWorld
 from worlds.coodrinate import Coordinate
-from worlds.cube_area import CubeArea
+from sensors.cube_area import CubeArea
 
 
 class Camera:
@@ -11,17 +11,15 @@ class Camera:
         self,
         id: int,
         world: AbstractWorld,
-        area: CubeArea,
         coordinate: Coordinate,
-        height: int,
+        area: CubeArea,
         initial_q: float,
         obsolescence_time: int
     ):
         self.id = id
         self._world = world
-        self._area = area
         self.coordinate = coordinate
-        self.height = height
+        self._area = area
         self._measurements = []
         self._initial_q = initial_q
         self._obsolescence_time = obsolescence_time
@@ -30,11 +28,11 @@ class Camera:
         uavs_in_area = [
             uav
             for uav in self._world.get_uavs()
-            if self._area.contain(uav)
+            if self._area.contain(uav.get_coordinate())
         ]
 
         for uav in uavs_in_area:
-            cube = (uav.get_position(), self._initial_q)
+            cube = (uav.get_coordinate(), self._initial_q)
             measurement = Measurement([cube], self._world.actual_step)
             self._measurements.append(measurement)
 

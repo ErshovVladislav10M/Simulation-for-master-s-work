@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.patches import RegularPolygon, Circle, Arrow
 
-from sensors.camera import Camera
+from sensors.cameras.camera import Camera
 from uavs.uav import UAV
 from worlds.area import Area
-from worlds.cube_area import CubeArea
+from sensors.cube_area import CubeArea
 from worlds.square.building import SquareBuilding
 
 
@@ -137,14 +137,14 @@ class SquareDrawer:
     def _draw_cube_area(self, sub_plot: Axes, area: CubeArea, id: int) -> None:
         for cube in area.cubes:
             polygon = RegularPolygon(
-                xy=(cube.x, cube.y),
+                xy=(cube.coordinate.x, cube.coordinate.y),
                 numVertices=4,
-                radius=math.sqrt(2) / 2,
+                radius=math.sqrt(2 * cube.side * cube.side) / 2,
                 orientation=0.25 * math.pi,
-                edgecolor=self._colors[id],
+                edgecolor=self._colors[id % 20],
                 linewidth=0,
-                facecolor="white",
-                hatch="..",
+                facecolor=self._colors[id % 20],
+                # hatch="..",
             )
             sub_plot.add_patch(polygon)
 
@@ -156,23 +156,23 @@ class SquareDrawer:
             circle = Circle(
                 xy=(position.x, position.y),
                 radius=0.2,
-                edgecolor=self._colors[camera.id],
+                edgecolor=self._colors[camera.id % 20],
             )
-            circle.set_label("Camera " + str(camera.id))
+            # circle.set_label("Camera " + str(camera.id))
             sub_plot.add_patch(circle)
 
     def _draw_uavs(self, sup_plot: Axes):
         for uav in self._uavs:
-            position = uav.get_position()
-            next_position = uav.get_next_position()
-            if position is None or next_position is None:
+            coordinate = uav.get_coordinate()
+            next_coordinate = uav.get_next_coordinate()
+            if coordinate is None or next_coordinate is None:
                 continue
 
             arrow = Arrow(
-                x=position.x,
-                y=position.y,
-                dx=next_position.x - position.x,
-                dy=next_position.y - position.y,
+                x=coordinate.x,
+                y=coordinate.y,
+                dx=next_coordinate.x - coordinate.x,
+                dy=next_coordinate.y - coordinate.y,
                 width=1,
                 facecolor="red",
             )

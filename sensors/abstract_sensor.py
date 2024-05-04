@@ -1,6 +1,6 @@
 from abc import ABC
 
-from worlds.cube_area import CubeArea
+from sensors.cube_area import CubeArea
 from worlds.square.world import SquareWorld
 
 

@@ -1,10 +1,10 @@
 from generators.square.building_generator import SquareBuildingGenerator
+from generators.square.camera_generator import CameraGenerator
+from generators.square.simple_camera_area_generator import SimpleCameraAreaGenerator
 from generators.square.world_generator import SquareWorldGenerator
+from sensors.cameras.camera import Camera
 from worlds.area import Area
-from worlds.cube_area import CubeArea
 from worlds.coodrinate import Coordinate
-from worlds.cube import Cube
-
 
 if __name__ == "__main__":
     build_generator = SquareBuildingGenerator(
@@ -52,25 +52,43 @@ if __name__ == "__main__":
             Coordinate(-200, 190),
         ])
     ]
+    camera_generator = CameraGenerator(
+        min_x=-150,
+        max_x=150,
+        min_y=-150,
+        max_y=150,
+        average_height=20,
+        min_height=5,
+        max_height=100,
+        num_of_cameras=100,
+        initial_q=0.5,
+        obsolescence_time=5
+    )
+
     world = SquareWorldGenerator(
         num_steps=10,
         create_step_images=True,
         exclude_areas=exclude_areas,
         cube_side_size=1,
-        building_generator=build_generator
+        building_generator=build_generator,
+        camera_generator=camera_generator
     ).create()
 
+    area = SimpleCameraAreaGenerator(
+        start_coordinate=Coordinate(0, 0),
+        radius=5,
+        cube_side=0.25,
+    ).create()
+    camera = Camera(
+        id=0,
+        world=world,
+        coordinate=Coordinate(0, 0),
+        area=area,
+        initial_q=1,
+        obsolescence_time=10
+    )
+    world.cameras.append(camera)
     # route = [Cube(x, x, x) for x in range(8)]
     # world.create_uav(route=route)
 
-    # area_cubes = []
-    # for i in range(1, 8):
-    #     for j in range(i, 8):
-    #         # for k in range(8):
-    #         area_cubes.append(Cube(i, j, 0))
-    # area = Area(area_cubes)
-    # camera = world.create_camera(area=area, position=Cube(0, 1, 1), initial_q=0.3, obsolescence_time=4)
-
     world.run()
-
-    # print(camera.get_all_measurements())
