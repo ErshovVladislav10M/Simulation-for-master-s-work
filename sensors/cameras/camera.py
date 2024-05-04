@@ -1,11 +1,13 @@
+from matplotlib.patches import Circle
 
 from measurements.measurement import Measurement
 from worlds.abstract_world import AbstractWorld
+from worlds.abstract_world_object import AbstractWorldObject
 from worlds.coodrinate import Coordinate
 from sensors.cube_area import CubeArea
 
 
-class Camera:
+class Camera(AbstractWorldObject):
 
     def __init__(
         self,
@@ -23,6 +25,14 @@ class Camera:
         self._measurements = []
         self._initial_q = initial_q
         self._obsolescence_time = obsolescence_time
+        super().__init__()
+
+    def create_patch(self) -> Circle:
+        return Circle(
+            xy=(self.coordinate.x, self.coordinate.y),
+            radius=0.2,
+            edgecolor="blue",
+        )
 
     def do_measurement(self) -> None:
         uavs_in_area = [

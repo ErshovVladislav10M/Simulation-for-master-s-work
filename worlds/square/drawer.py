@@ -2,12 +2,12 @@ import math
 
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
-from matplotlib.patches import RegularPolygon, Circle, Arrow
+from matplotlib.patches import RegularPolygon, Arrow
 
 from sensors.cameras.camera import Camera
+from sensors.cube_area import CubeArea
 from uavs.uav import UAV
 from worlds.area import Area
-from sensors.cube_area import CubeArea
 from worlds.square.building import SquareBuilding
 
 
@@ -141,10 +141,10 @@ class SquareDrawer:
                 numVertices=4,
                 radius=math.sqrt(2 * cube.side * cube.side) / 2,
                 orientation=0.25 * math.pi,
-                edgecolor=self._colors[id % 20],
+                edgecolor="blue",
                 linewidth=0,
-                facecolor=self._colors[id % 20],
-                # hatch="..",
+                facecolor="white",
+                hatch="xx",
             )
             sub_plot.add_patch(polygon)
 
@@ -152,14 +152,14 @@ class SquareDrawer:
         for camera in self._cameras:
             self._draw_cube_area(sub_plot, camera._area, camera.id)
 
-            position = camera.coordinate
-            circle = Circle(
-                xy=(position.x, position.y),
-                radius=0.2,
-                edgecolor=self._colors[camera.id % 20],
-            )
-            # circle.set_label("Camera " + str(camera.id))
-            sub_plot.add_patch(circle)
+        patches = [camera.create_patch() for camera in self._cameras]
+        if len(patches) == 0:
+            return
+
+        patches[0].set_label("Cameras")
+
+        for patch in patches:
+            sub_plot.add_patch(patch)
 
     def _draw_uavs(self, sup_plot: Axes):
         for uav in self._uavs:
