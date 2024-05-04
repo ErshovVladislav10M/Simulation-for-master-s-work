@@ -2,8 +2,8 @@ import math
 
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.axes import Axes
-from matplotlib.lines import Line2D
 from matplotlib.patches import RegularPolygon, Circle, Arrow
 from matplotlib.path import Path
 
@@ -119,12 +119,10 @@ class SquareDrawer:
 
     def _draw_exclude_areas(self, sub_plot: Axes) -> None:
         for exclude_area in self._exclude_areas:
-            vertices = [(coordinate.x, coordinate.y) for coordinate in exclude_area.coordinates]
-            xdata = [coordinate.x for coordinate in exclude_area.coordinates]
-            xdata.append(exclude_area.coordinates[0].x)
-            ydata = [coordinate.y for coordinate in exclude_area.coordinates]
-            ydata.append(exclude_area.coordinates[0].y)
-
+            vertices = np.array([
+                (coordinate.x, coordinate.y)
+                for coordinate in exclude_area.coordinates
+            ])
             path = Path(vertices=vertices, closed=True)
             path_patch = matplotlib.patches.PathPatch(
                 path,
@@ -147,7 +145,6 @@ class SquareDrawer:
                 hatch="xx",
                 # label="Buildings",
             )
-
             sub_plot.add_patch(polygon)
 
     def _draw_area(self, sub_plot: Axes, area: CubeArea, id: int) -> None:
@@ -162,7 +159,6 @@ class SquareDrawer:
                 facecolor="white",
                 hatch="..",
             )
-
             sub_plot.add_patch(polygon)
 
     def _draw_cameras(self, sub_plot: Axes) -> None:
@@ -193,7 +189,6 @@ class SquareDrawer:
                 width=1,
                 facecolor="red",
             )
-
             sup_plot.add_patch(arrow)
 
     # def get_accuracy(self) -> int:
