@@ -1,14 +1,16 @@
 import math
 
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.lines import Line2D
 from matplotlib.patches import RegularPolygon, Circle, Arrow
+from matplotlib.path import Path
 
 from sensors.camera import Camera
 from uavs.uav import UAV
 from worlds.area import Area
-from worlds.coodrinate import Coordinate
+from worlds.cube_area import CubeArea
 from worlds.square.building import SquareBuilding
 
 
@@ -19,7 +21,7 @@ class SquareDrawer:
         buildings: list[SquareBuilding],
         cameras: list[Camera],
         uavs: list[UAV],
-        world_vertices: list[Coordinate],
+        exclude_areas: list[Area],
         cube_side_size: float,
         path_to_results: str = "results",
         create_step_images: bool = True
@@ -27,7 +29,7 @@ class SquareDrawer:
         self._buildings = buildings
         self._cameras = cameras
         self._uavs = uavs
-        self._world_vertices = world_vertices
+        self._exclude_areas = exclude_areas
         self._cube_side_size = cube_side_size
 
         self._path_to_results = path_to_results
@@ -74,7 +76,7 @@ class SquareDrawer:
         # sub_plot = figure.add_subplot(1, 2, 1)
         sub_plot = figure.add_subplot()
 
-        self._draw_world_vertices(sub_plot)
+        self._draw_exclude_areas(sub_plot)
         self._draw_building(sub_plot)
         self._draw_cameras(sub_plot)
         self._draw_uavs(sub_plot)
@@ -115,19 +117,22 @@ class SquareDrawer:
         )
         plt.close()
 
-    def _draw_world_vertices(self, sub_plot: Axes) -> None:
-        xdata = [vertex.x for vertex in self._world_vertices]
-        xdata.append(self._world_vertices[0].x)
-        ydata = [vertex.y for vertex in self._world_vertices]
-        ydata.append(self._world_vertices[0].y)
+    def _draw_exclude_areas(self, sub_plot: Axes) -> None:
+        for exclude_area in self._exclude_areas:
+            vertices = [(coordinate.x, coordinate.y) for coordinate in exclude_area.coordinates]
+            xdata = [coordinate.x for coordinate in exclude_area.coordinates]
+            xdata.append(exclude_area.coordinates[0].x)
+            ydata = [coordinate.y for coordinate in exclude_area.coordinates]
+            ydata.append(exclude_area.coordinates[0].y)
 
-        line = Line2D(
-            xdata=xdata,
-            ydata=ydata,
-            color="black",
-            label="City borders"
-        )
-        sub_plot.add_line(line)
+            path = Path(vertices=vertices, closed=True)
+            path_patch = matplotlib.patches.PathPatch(
+                path,
+                fill=False,
+                label="Exclude areas",
+                hatch="o"
+            )
+            sub_plot.add_patch(path_patch)
 
     def _draw_building(self, sub_plot: Axes) -> None:
         for build in self._buildings:
@@ -139,12 +144,13 @@ class SquareDrawer:
                 orientation=0.25 * math.pi,
                 edgecolor="brown",
                 facecolor="white",
-                hatch="xx"
+                hatch="xx",
+                # label="Buildings",
             )
 
             sub_plot.add_patch(polygon)
 
-    def _draw_area(self, sub_plot: Axes, area: Area, id: int) -> None:
+    def _draw_area(self, sub_plot: Axes, area: CubeArea, id: int) -> None:
         for cube in area.cubes:
             polygon = RegularPolygon(
                 xy=(cube.x, cube.y),

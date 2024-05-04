@@ -1,6 +1,7 @@
 from generators.square.building_generator import SquareBuildingGenerator
 from generators.square.world_generator import SquareWorldGenerator
 from worlds.area import Area
+from worlds.cube_area import CubeArea
 from worlds.coodrinate import Coordinate
 from worlds.cube import Cube
 
@@ -19,18 +20,42 @@ if __name__ == "__main__":
         max_side=50,
         num_of_buildings=50
     )
-    world_vertices = [
-        Coordinate(-70, -70),
-        Coordinate(-30, 0),
-        Coordinate(-70, 70),
-        Coordinate(70, 70),
-        Coordinate(140, 0),
-        Coordinate(70, -70)
+    exclude_areas = [
+        Area([
+            Coordinate(-200, 160),
+            Coordinate(-170, 140),
+            Coordinate(-150, 130),
+            Coordinate(-130, 100),
+            Coordinate(-90, 90),
+            Coordinate(-60, 80),
+            Coordinate(-50, 60),
+            Coordinate(20, 10),
+            Coordinate(60, 0),
+            Coordinate(80, -30),
+            Coordinate(110, -40),
+            Coordinate(140, -40),
+            Coordinate(160, -70),
+            Coordinate(200, -80),
+            Coordinate(200, -50),
+            Coordinate(160, -30),
+            Coordinate(140, -10),
+            Coordinate(110, -10),
+            Coordinate(80, 0),
+            Coordinate(60, 30),
+            Coordinate(20, 40),
+            Coordinate(-50, 90),
+            Coordinate(-60, 110),
+            Coordinate(-90, 120),
+            Coordinate(-130, 130),
+            Coordinate(-150, 160),
+            Coordinate(-170, 170),
+            Coordinate(-200, 190),
+        ])
     ]
     world = SquareWorldGenerator(
         num_steps=10,
         create_step_images=True,
-        world_vertices=world_vertices,
+        exclude_areas=exclude_areas,
         cube_side_size=1,
         building_generator=build_generator
     ).create()

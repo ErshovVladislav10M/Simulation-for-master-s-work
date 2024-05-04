@@ -1,11 +1,12 @@
 from abc import ABC
 
+from worlds.area import Area
 from worlds.coodrinate import Coordinate
 from worlds.cube import Cube
 from sensors.camera import Camera
 from uavs.uav import UAV
 from worlds.abstract_world import AbstractWorld
-from worlds.area import Area
+from worlds.cube_area import CubeArea
 from worlds.square.drawer import SquareDrawer
 from worlds.square.building import SquareBuilding
 
@@ -16,20 +17,20 @@ class SquareWorld(AbstractWorld, ABC):
         self,
         num_steps: int,
         create_step_images: bool,
-        vertices: list[Coordinate],
+        exclude_areas: list[Area],
         cube_side_size: float
     ):
         super().__init__(num_steps, create_step_images)
         self._buildings = []
         self.cameras = []
         self.uavs = []
-        self._vertices = vertices
+        self._exclude_areas = exclude_areas
         self._cube_side_size = cube_side_size
         self._drawer = SquareDrawer(
             self._buildings,
             self.cameras,
             self.uavs,
-            vertices,
+            self._exclude_areas,
             cube_side_size
         )
 
@@ -72,7 +73,7 @@ class SquareWorld(AbstractWorld, ABC):
 
         return build
 
-    def create_camera(self, area: Area, position: Cube, initial_q, obsolescence_time: int) -> Camera:
+    def create_camera(self, area: CubeArea, position: Cube, initial_q, obsolescence_time: int) -> Camera:
         camera = Camera(
             id=len(self.cameras),
             world=self,

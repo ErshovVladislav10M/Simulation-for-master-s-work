@@ -1,7 +1,7 @@
 from worlds.cube import Cube
 from measurements.measurement import Measurement
 from worlds.abstract_world import AbstractWorld
-from worlds.area import Area
+from worlds.cube_area import CubeArea
 
 
 class Camera:
@@ -10,7 +10,7 @@ class Camera:
         self,
         id: int,
         world: AbstractWorld,
-        area: Area,
+        area: CubeArea,
         position: Cube,
         initial_q: float,
         obsolescence_time: int
