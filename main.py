@@ -8,17 +8,17 @@ from worlds.cube import Cube
 
 if __name__ == "__main__":
     build_generator = SquareBuildingGenerator(
-        min_x=-100,
-        max_x=100,
-        min_y=-100,
-        max_y=100,
+        min_x=-150,
+        max_x=150,
+        min_y=-150,
+        max_y=150,
         average_height=20,
         min_height=5,
         max_height=100,
         average_side=15,
         min_side=10,
         max_side=50,
-        num_of_buildings=50
+        num_of_buildings=100
     )
     exclude_areas = [
         Area([

@@ -73,12 +73,20 @@ class SquareWorld(AbstractWorld, ABC):
 
         return build
 
-    def create_camera(self, area: CubeArea, position: Cube, initial_q, obsolescence_time: int) -> Camera:
+    def create_camera(
+        self,
+        area: CubeArea,
+        coordinate: Coordinate,
+        height: int,
+        initial_q,
+        obsolescence_time: int
+    ) -> Camera:
         camera = Camera(
             id=len(self.cameras),
             world=self,
             area=area,
-            position=position,
+            coordinate=coordinate,
+            height=height,
             initial_q=initial_q,
             obsolescence_time=obsolescence_time
         )

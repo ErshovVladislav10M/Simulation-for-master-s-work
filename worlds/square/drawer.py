@@ -1,11 +1,8 @@
 import math
 
-import matplotlib
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.patches import RegularPolygon, Circle, Arrow
-from matplotlib.path import Path
 
 from sensors.camera import Camera
 from uavs.uav import UAV
@@ -118,36 +115,26 @@ class SquareDrawer:
         plt.close()
 
     def _draw_exclude_areas(self, sub_plot: Axes) -> None:
-        for exclude_area in self._exclude_areas:
-            vertices = np.array([
-                (coordinate.x, coordinate.y)
-                for coordinate in exclude_area.coordinates
-            ])
-            path = Path(vertices=vertices, closed=True)
-            path_patch = matplotlib.patches.PathPatch(
-                path,
-                fill=False,
-                label="Exclude areas",
-                hatch="o"
-            )
-            sub_plot.add_patch(path_patch)
+        patches = [exclude_area.create_patch() for exclude_area in self._exclude_areas]
+        if len(patches) == 0:
+            return
+
+        patches[0].set_label("Exclude area")
+
+        for patch in patches:
+            sub_plot.add_patch(patch)
 
     def _draw_building(self, sub_plot: Axes) -> None:
-        for build in self._buildings:
-            coordinate = build.coordinate
-            polygon = RegularPolygon(
-                xy=(coordinate.x, coordinate.y),
-                numVertices=4,
-                radius=math.sqrt(2 * build.side * build.side) / 2,
-                orientation=0.25 * math.pi,
-                edgecolor="brown",
-                facecolor="white",
-                hatch="xx",
-                # label="Buildings",
-            )
-            sub_plot.add_patch(polygon)
+        patches = [building.create_patch() for building in self._buildings]
+        if len(patches) == 0:
+            return
 
-    def _draw_area(self, sub_plot: Axes, area: CubeArea, id: int) -> None:
+        patches[0].set_label("Buildings")
+
+        for patch in patches:
+            sub_plot.add_patch(patch)
+
+    def _draw_cube_area(self, sub_plot: Axes, area: CubeArea, id: int) -> None:
         for cube in area.cubes:
             polygon = RegularPolygon(
                 xy=(cube.x, cube.y),
@@ -163,9 +150,9 @@ class SquareDrawer:
 
     def _draw_cameras(self, sub_plot: Axes) -> None:
         for camera in self._cameras:
-            self._draw_area(sub_plot, camera._area, camera.id)
+            self._draw_cube_area(sub_plot, camera._area, camera.id)
 
-            position = camera.position
+            position = camera.coordinate
             circle = Circle(
                 xy=(position.x, position.y),
                 radius=0.2,

@@ -1,6 +1,7 @@
-from worlds.cube import Cube
+
 from measurements.measurement import Measurement
 from worlds.abstract_world import AbstractWorld
+from worlds.coodrinate import Coordinate
 from worlds.cube_area import CubeArea
 
 
@@ -11,14 +12,16 @@ class Camera:
         id: int,
         world: AbstractWorld,
         area: CubeArea,
-        position: Cube,
+        coordinate: Coordinate,
+        height: int,
         initial_q: float,
         obsolescence_time: int
     ):
         self.id = id
         self._world = world
         self._area = area
-        self.position = position
+        self.coordinate = coordinate
+        self.height = height
         self._measurements = []
         self._initial_q = initial_q
         self._obsolescence_time = obsolescence_time
