@@ -1,7 +1,8 @@
-from generators.square.building_generator import SquareBuildingGenerator
-from generators.square.camera_generator import CameraGenerator
-from generators.square.simple_camera_area_generator import SimpleCameraAreaGenerator
-from generators.square.world_generator import SquareWorldGenerator
+from generators.aircraft_uav_generator import AircraftUAVGenerator
+from generators.city.building_generator import SquareBuildingGenerator
+from generators.city.camera_generator import CameraGenerator
+from generators.city.simple_camera_area_generator import SimpleCameraAreaGenerator
+from generators.city.world_generator import SquareWorldGenerator
 from sensors.cameras.camera import Camera
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
@@ -17,8 +18,7 @@ if __name__ == "__main__":
         max_height=100,
         average_side=15,
         min_side=10,
-        max_side=50,
-        num_of_buildings=100
+        max_side=50
     )
     exclude_areas = [
         Area([
@@ -64,15 +64,21 @@ if __name__ == "__main__":
         initial_q=0.5,
         obsolescence_time=5
     )
+    uav_generator = AircraftUAVGenerator(
+        start_coordinate=Coordinate(-100, -100, 30),
+        start_vector=Coordinate(5, 5, 0),
+        num_of_steps=20
+    )
 
     world = SquareWorldGenerator(
-        num_steps=10,
+        num_steps=20,
         create_step_images=True,
         exclude_areas=exclude_areas,
         cube_side_size=1,
         building_generator=build_generator,
-        camera_generator=camera_generator
-    ).create()
+        camera_generator=camera_generator,
+        uav_generator=uav_generator
+    ).create()[0]
 
     area = SimpleCameraAreaGenerator(
         start_coordinate=Coordinate(0, 0),

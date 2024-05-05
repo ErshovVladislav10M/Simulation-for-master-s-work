@@ -6,8 +6,8 @@ from uavs.uav import UAV
 from worlds.abstract_world import AbstractWorld
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
-from worlds.square.building import SquareBuilding
-from worlds.square.drawer import SquareDrawer
+from worlds.city.building import SquareBuilding
+from worlds.city.drawer import CityDrawer
 
 
 class SquareWorld(AbstractWorld, ABC):
@@ -25,7 +25,7 @@ class SquareWorld(AbstractWorld, ABC):
         self.uavs = []
         self._exclude_areas = exclude_areas
         self._cube_side_size = cube_side_size
-        self._drawer = SquareDrawer(
+        self._drawer = CityDrawer(
             self.buildings,
             self.cameras,
             self.uavs,

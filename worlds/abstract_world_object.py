@@ -11,7 +11,7 @@ class AbstractWorldObject(ABC):
         self._patch = self.create_patch()
 
     @abstractmethod
-    def create_patch(self) -> Patch:
+    def create_patch(self) -> Patch | None:
         ...
 
     def contain(self, coordinate: Coordinate, radius: float = 0) -> bool:

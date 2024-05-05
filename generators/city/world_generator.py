@@ -1,10 +1,11 @@
 from generators.abstract_generator import AbstractGenerator
-from generators.square.building_generator import SquareBuildingGenerator
-from generators.square.camera_generator import CameraGenerator
+from generators.aircraft_uav_generator import AircraftUAVGenerator
+from generators.city.building_generator import SquareBuildingGenerator
+from generators.city.camera_generator import CameraGenerator
 from worlds.abstract_world_object import AbstractWorldObject
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
-from worlds.square.world import SquareWorld
+from worlds.city.world import SquareWorld
 
 
 class SquareWorldGenerator(AbstractGenerator):
@@ -16,7 +17,8 @@ class SquareWorldGenerator(AbstractGenerator):
         exclude_areas: list[Area],
         cube_side_size: float,
         building_generator: SquareBuildingGenerator,
-        camera_generator: CameraGenerator
+        camera_generator: CameraGenerator,
+        uav_generator: AircraftUAVGenerator
     ):
         self._num_steps = num_steps
         self._create_step_images = create_step_images
@@ -24,8 +26,9 @@ class SquareWorldGenerator(AbstractGenerator):
         self._cube_side_size = cube_side_size
         self._building_generator = building_generator
         self._camera_generator = camera_generator
+        self._uav_generator = uav_generator
 
-    def create(self) -> SquareWorld:
+    def create(self, num_of_objects=1) -> list[SquareWorld]:
         world = SquareWorld(
             self._num_steps,
             self._create_step_images,
@@ -33,7 +36,7 @@ class SquareWorldGenerator(AbstractGenerator):
             self._cube_side_size
         )
 
-        for building in self._building_generator.create():
+        for building in self._building_generator.create(100):
             if self._check_on_contains(building.coordinate, building.side, self._exclude_areas):
                 continue
 
@@ -45,7 +48,10 @@ class SquareWorldGenerator(AbstractGenerator):
         for camera in self._camera_generator.create1(world):
             world.cameras.append(camera)
 
-        return world
+        uav = self._uav_generator.create(3)[0]
+        world.uavs.append(uav)
+
+        return [world]
 
     @staticmethod
     def _check_on_contains(

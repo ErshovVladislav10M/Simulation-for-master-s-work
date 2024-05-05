@@ -15,3 +15,20 @@ class Coordinate:
         return np.isclose(self.x, other.x)\
             and np.isclose(self.y, other.y)\
             and np.isclose(self.z, other.z)
+
+    def __add__(self, other):
+        return Coordinate(
+            self.x + other.x,
+            self.y + other.y,
+            self.z + other.z,
+        )
+
+    def __sub__(self, other):
+        return Coordinate(
+            self.x - other.x,
+            self.y - other.y,
+            self.z - other.z,
+        )
+
+    def __mul__(self, other):
+        return self.x * other.x + self.y * other.y + self.z * other.z

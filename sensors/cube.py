@@ -10,6 +10,9 @@ class Cube:
         self.side = side
 
     def contain(self, coordinate: Coordinate) -> bool:
+        if coordinate is None:
+            return False
+
         if self.coordinate.x + 0.5 * self.side < coordinate.x:
             return False
         if self.coordinate.x - 0.5 * self.side > coordinate.x:

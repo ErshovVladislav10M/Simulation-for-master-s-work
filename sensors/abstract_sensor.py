@@ -1,7 +1,7 @@
 from abc import ABC
 
 from sensors.cube_area import CubeArea
-from worlds.square.world import SquareWorld
+from worlds.city.world import SquareWorld
 
 
 class AbstractSensor(ABC):

@@ -2,16 +2,17 @@ import math
 
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
-from matplotlib.patches import RegularPolygon, Arrow
+from matplotlib.patches import RegularPolygon
 
 from sensors.cameras.camera import Camera
 from sensors.cube_area import CubeArea
 from uavs.uav import UAV
+from worlds.abstract_world_object import AbstractWorldObject
 from worlds.area import Area
-from worlds.square.building import SquareBuilding
+from worlds.city.building import SquareBuilding
 
 
-class SquareDrawer:
+class CityDrawer:
 
     def __init__(
         self,
@@ -20,8 +21,7 @@ class SquareDrawer:
         uavs: list[UAV],
         exclude_areas: list[Area],
         cube_side_size: float,
-        path_to_results: str = "results",
-        create_step_images: bool = True
+        path_to_results: str = "results"
     ):
         self._buildings = buildings
         self._cameras = cameras
@@ -30,7 +30,6 @@ class SquareDrawer:
         self._cube_side_size = cube_side_size
 
         self._path_to_results = path_to_results
-        self._create_step_images = create_step_images
 
         self._colors = [
             "gray",
@@ -73,10 +72,10 @@ class SquareDrawer:
         # sub_plot = figure.add_subplot(1, 2, 1)
         sub_plot = figure.add_subplot()
 
-        self._draw_exclude_areas(sub_plot)
-        self._draw_building(sub_plot)
+        self._draw_objects(sub_plot, self._exclude_areas, "Exclude area")
+        self._draw_objects(sub_plot, self._buildings, "Buildings")
         self._draw_cameras(sub_plot)
-        self._draw_uavs(sub_plot)
+        self._draw_objects(sub_plot, self._uavs, "UAVs")
 
         plt.xlabel("Step number: " + str(step), fontsize="xx-large")
         sub_plot.set(
@@ -114,27 +113,7 @@ class SquareDrawer:
         )
         plt.close()
 
-    def _draw_exclude_areas(self, sub_plot: Axes) -> None:
-        patches = [exclude_area.create_patch() for exclude_area in self._exclude_areas]
-        if len(patches) == 0:
-            return
-
-        patches[0].set_label("Exclude area")
-
-        for patch in patches:
-            sub_plot.add_patch(patch)
-
-    def _draw_building(self, sub_plot: Axes) -> None:
-        patches = [building.create_patch() for building in self._buildings]
-        if len(patches) == 0:
-            return
-
-        patches[0].set_label("Buildings")
-
-        for patch in patches:
-            sub_plot.add_patch(patch)
-
-    def _draw_cube_area(self, sub_plot: Axes, area: CubeArea, id: int) -> None:
+    def _draw_cube_area(self, sub_plot: Axes, area: CubeArea) -> None:
         for cube in area.cubes:
             polygon = RegularPolygon(
                 xy=(cube.coordinate.x, cube.coordinate.y),
@@ -149,8 +128,8 @@ class SquareDrawer:
             sub_plot.add_patch(polygon)
 
     def _draw_cameras(self, sub_plot: Axes) -> None:
-        for camera in self._cameras:
-            self._draw_cube_area(sub_plot, camera._area, camera.id)
+        # for camera in self._cameras:
+        #     self._draw_cube_area(sub_plot, camera._area)
 
         patches = [camera.create_patch() for camera in self._cameras]
         if len(patches) == 0:
@@ -161,22 +140,20 @@ class SquareDrawer:
         for patch in patches:
             sub_plot.add_patch(patch)
 
-    def _draw_uavs(self, sup_plot: Axes):
-        for uav in self._uavs:
-            coordinate = uav.get_coordinate()
-            next_coordinate = uav.get_next_coordinate()
-            if coordinate is None or next_coordinate is None:
-                continue
+    @staticmethod
+    def _draw_objects(
+        sub_plot: Axes,
+        world_objects: list[AbstractWorldObject],
+        label: str
+    ) -> None:
+        patches = [world_object.create_patch() for world_object in world_objects]
+        if len(patches) == 0 or patches[0] is None:
+            return
 
-            arrow = Arrow(
-                x=coordinate.x,
-                y=coordinate.y,
-                dx=next_coordinate.x - coordinate.x,
-                dy=next_coordinate.y - coordinate.y,
-                width=1,
-                facecolor="red",
-            )
-            sup_plot.add_patch(arrow)
+        patches[0].set_label(label)
+
+        for patch in patches:
+            sub_plot.add_patch(patch)
 
     # def get_accuracy(self) -> int:
     #     sum_accuracy = 0
