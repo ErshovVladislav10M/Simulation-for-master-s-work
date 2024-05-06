@@ -34,3 +34,6 @@ class Cube:
 
         return self.coordinate == other.coordinate\
             and np.isclose(self.side, other.side)
+
+    def __str__(self):
+        return "coordinate = " + str(self.coordinate) + ", side = " + str(self.side)

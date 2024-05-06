@@ -5,10 +5,10 @@ from generators.city.camera_generator import CameraGenerator
 from worlds.abstract_world_object import AbstractWorldObject
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
-from worlds.city.world import SquareWorld
+from worlds.city.world import CityWorld
 
 
-class SquareWorldGenerator(AbstractGenerator):
+class CityWorldGenerator(AbstractGenerator):
 
     def __init__(
         self,
@@ -28,8 +28,8 @@ class SquareWorldGenerator(AbstractGenerator):
         self._camera_generator = camera_generator
         self._uav_generator = uav_generator
 
-    def create(self, num_of_objects=1) -> list[SquareWorld]:
-        world = SquareWorld(
+    def create(self, num_of_objects=1) -> list[CityWorld]:
+        world = CityWorld(
             self._num_steps,
             self._create_step_images,
             self._exclude_areas,

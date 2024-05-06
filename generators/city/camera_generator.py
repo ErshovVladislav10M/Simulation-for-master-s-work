@@ -2,9 +2,9 @@ import numpy as np
 from scipy.stats import norm
 
 from generators.abstract_generator import AbstractGenerator
-from generators.city.simple_camera_area_generator import SimpleCameraAreaGenerator
 from sensors.cameras.camera import Camera
 from worlds.coodrinate import Coordinate
+from worlds.vector import Vector
 
 
 class CameraGenerator(AbstractGenerator):
@@ -33,8 +33,10 @@ class CameraGenerator(AbstractGenerator):
         return [
             Camera(
                 id=id,
-                area=SimpleCameraAreaGenerator(Coordinate(x, y, height), radius=5, cube_side=1).create()[0],
                 coordinate=Coordinate(x, y, height),
+                vector=Vector(20, 20, 0),
+                alpha=1,
+                beta=1,
                 initial_q=self._initial_q,
                 obsolescence_time=self._obsolescence_time
             )

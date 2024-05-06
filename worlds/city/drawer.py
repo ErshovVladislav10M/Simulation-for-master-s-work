@@ -9,14 +9,14 @@ from sensors.cube_area import CubeArea
 from uavs.uav import UAV
 from worlds.abstract_world_object import AbstractWorldObject
 from worlds.area import Area
-from worlds.city.building import SquareBuilding
+from worlds.city.building import CityBuilding
 
 
 class CityDrawer:
 
     def __init__(
         self,
-        buildings: list[SquareBuilding],
+        buildings: list[CityBuilding],
         cameras: list[Camera],
         uavs: list[UAV],
         exclude_areas: list[Area],

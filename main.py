@@ -1,9 +1,10 @@
 from generators.aircraft_uav_generator import AircraftUAVGenerator
 from generators.city.building_generator import SquareBuildingGenerator
 from generators.city.camera_generator import CameraGenerator
-from generators.city.world_generator import SquareWorldGenerator
+from generators.city.world_generator import CityWorldGenerator
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
+from worlds.vector import Vector
 
 if __name__ == "__main__":
     build_generator = SquareBuildingGenerator(
@@ -61,13 +62,13 @@ if __name__ == "__main__":
     uav_generator = AircraftUAVGenerator(
         min_start_coordinate=Coordinate(-170, -170, 10),
         max_start_coordinate=Coordinate(170, 170, 150),
-        min_start_vector=Coordinate(-10, -10, 0),
-        max_start_vector=Coordinate(10, 10, 0),
+        min_start_vector=Vector(-10, -10, 0),
+        max_start_vector=Vector(10, 10, 0),
         keep_start_vector=True,
         num_of_steps=20
     )
 
-    world = SquareWorldGenerator(
+    world = CityWorldGenerator(
         num_steps=20,
         create_step_images=True,
         exclude_areas=exclude_areas,

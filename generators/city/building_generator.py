@@ -3,7 +3,7 @@ from scipy.stats import norm
 
 from generators.abstract_generator import AbstractGenerator
 from worlds.coodrinate import Coordinate
-from worlds.city.building import SquareBuilding
+from worlds.city.building import CityBuilding
 
 
 class SquareBuildingGenerator(AbstractGenerator):
@@ -28,9 +28,9 @@ class SquareBuildingGenerator(AbstractGenerator):
         self._peak_side = peak_side
         self._scale_side = scale_side
 
-    def create(self, num_of_objects=1) -> list[SquareBuilding]:
+    def create(self, num_of_objects=1) -> list[CityBuilding]:
         return [
-            SquareBuilding(Coordinate(x=x, y=y, z=0), height, side)
+            CityBuilding(Coordinate(x=x, y=y, z=0), height, side)
             for x, y, height, side in zip(
                 np.random.randint(self._min_x, self._max_x, num_of_objects),
                 np.random.randint(self._min_y, self._max_y, num_of_objects),

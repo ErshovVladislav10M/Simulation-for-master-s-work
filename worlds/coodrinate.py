@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 
@@ -7,6 +9,13 @@ class Coordinate:
         self.x = x
         self.y = y
         self.z = z
+
+    def distance(self, other) -> float:
+        return math.sqrt(
+            math.pow(self.x - other.x, 2)
+            + math.pow(self.y - other.y, 2)
+            + math.pow(self.z - other.z, 2)
+        )
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Coordinate):
@@ -30,5 +39,8 @@ class Coordinate:
             self.z - other.z,
         )
 
-    def __mul__(self, other):
+    def __mul__(self, other) -> float:
         return self.x * other.x + self.y * other.y + self.z * other.z
+
+    def __str__(self) -> str:
+        return "[" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + "]"

@@ -1,10 +1,9 @@
-import math
-
 from scipy.stats import norm
 
 from generators.abstract_generator import AbstractGenerator
 from uavs.uav import UAV
 from worlds.coodrinate import Coordinate
+from worlds.vector import Vector
 
 
 class AircraftUAVGenerator(AbstractGenerator):
@@ -13,8 +12,8 @@ class AircraftUAVGenerator(AbstractGenerator):
         self,
         min_start_coordinate: Coordinate,
         max_start_coordinate: Coordinate,
-        min_start_vector: Coordinate,
-        max_start_vector: Coordinate,
+        min_start_vector: Vector,
+        max_start_vector: Vector,
         keep_start_vector: bool,
         num_of_steps: int
     ):
@@ -54,14 +53,8 @@ class AircraftUAVGenerator(AbstractGenerator):
         start_coordinate: Coordinate,
         start_vector: Coordinate
     ) -> list[Coordinate]:
-        peek_alpha = self._get_angle(
-            vector_1=Coordinate(start_vector.x, start_vector.y, 0),
-            vector_2=Coordinate(1, 0, 0)
-        )
-        peek_beta = self._get_angle(
-            vector_1=Coordinate(start_vector.x, 0, start_vector.z),
-            vector_2=Coordinate(1, 0, 0)
-        )
+        peek_alpha = Vector(start_vector.x, start_vector.y, 0).get_angle(Vector(1, 0, 0))
+        peek_beta = Vector(start_vector.x, 0, start_vector.z).get_angle(Vector(1, 0, 0))
 
         route = [start_coordinate]
         coordinate = start_coordinate
@@ -70,8 +63,8 @@ class AircraftUAVGenerator(AbstractGenerator):
             norm.rvs(loc=peek_alpha, scale=0.1, size=self._num_of_steps),
             norm.rvs(loc=peek_beta, scale=0.1, size=self._num_of_steps)
         ):
-            x, y = self._get_vector(vector.x, vector.y, alpha)
-            x, z = self._get_vector(x, vector.z, beta)
+            x, y = Vector.get_vector(vector.x, vector.y, alpha)
+            x, z = Vector.get_vector(x, vector.z, beta)
             coordinate += Coordinate(x, y, z)
 
             route.append(coordinate)
@@ -80,27 +73,3 @@ class AircraftUAVGenerator(AbstractGenerator):
                 vector = Coordinate(x, y, z)
 
         return route
-
-    @staticmethod
-    def _get_angle(vector_1: Coordinate, vector_2: Coordinate) -> float:
-        vector_1_length = math.sqrt(
-            math.pow(vector_1.x, 2)
-            + math.pow(vector_1.y, 2)
-            + math.pow(vector_1.z, 2)
-        )
-        vector_2_length = math.sqrt(
-            math.pow(vector_2.x, 2)
-            + math.pow(vector_2.y, 2)
-            + math.pow(vector_2.z, 2)
-        )
-
-        return math.asin(
-            vector_1 * vector_2 / vector_1_length / vector_2_length
-        )
-
-    @staticmethod
-    def _get_vector(first: float, second: float, angle: float) -> tuple[float, float]:
-        return (
-            first * math.cos(angle) - second * math.sin(angle),
-            second * math.cos(angle) + first * math.sin(angle)
-        )

@@ -6,11 +6,11 @@ from uavs.uav import UAV
 from worlds.abstract_world import AbstractWorld
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
-from worlds.city.building import SquareBuilding
+from worlds.city.building import CityBuilding
 from worlds.city.drawer import CityDrawer
 
 
-class SquareWorld(AbstractWorld, ABC):
+class CityWorld(AbstractWorld, ABC):
 
     def __init__(
         self,
@@ -62,8 +62,8 @@ class SquareWorld(AbstractWorld, ABC):
     def get_uavs(self) -> list[UAV]:
         return self.uavs
 
-    def create_building(self, coordinate: Coordinate, height: int, side: int) -> SquareBuilding:
-        build = SquareBuilding(coordinate, height, side)
+    def create_building(self, coordinate: Coordinate, height: int, side: int) -> CityBuilding:
+        build = CityBuilding(coordinate, height, side)
         self.buildings.append(build)
 
         return build
@@ -77,7 +77,7 @@ class SquareWorld(AbstractWorld, ABC):
     ) -> Camera:
         camera = Camera(
             id=len(self.cameras),
-            area=area,
+            alpha=area,
             coordinate=coordinate,
             initial_q=initial_q,
             obsolescence_time=obsolescence_time

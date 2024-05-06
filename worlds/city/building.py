@@ -6,7 +6,7 @@ from worlds.abstract_world_object import AbstractWorldObject
 from worlds.coodrinate import Coordinate
 
 
-class SquareBuilding(AbstractWorldObject):
+class CityBuilding(AbstractWorldObject):
 
     def __init__(self, coordinate: Coordinate, height: int, side: int):
         self.coordinate = coordinate
