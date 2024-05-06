@@ -45,11 +45,11 @@ class SquareWorldGenerator(AbstractGenerator):
 
             world.buildings.append(building)
 
-        for camera in self._camera_generator.create1(world):
+        for camera in self._camera_generator.create(100):
             world.cameras.append(camera)
 
-        uav = self._uav_generator.create(3)[0]
-        world.uavs.append(uav)
+        for uav in self._uav_generator.create(10):
+            world.uavs.append(uav)
 
         return [world]
 

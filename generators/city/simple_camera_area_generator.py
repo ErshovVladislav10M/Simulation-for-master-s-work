@@ -16,7 +16,7 @@ class SimpleCameraAreaGenerator(AbstractGenerator):
         self._radius = radius
         self._cube_side = cube_side
 
-    def create(self) -> CubeArea:
+    def create(self, num_of_objects=1) -> list[CubeArea]:
         cubes = []
         for i in range(
             int((self._start_coordinate.x - self._radius) / self._cube_side),
@@ -31,4 +31,4 @@ class SimpleCameraAreaGenerator(AbstractGenerator):
                 coordinate = Coordinate(x=i * self._cube_side, y=j * self._cube_side)
                 cubes.append(Cube(coordinate, self._cube_side))
 
-        return CubeArea(cubes)
+        return [CubeArea(cubes)]

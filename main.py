@@ -1,9 +1,7 @@
 from generators.aircraft_uav_generator import AircraftUAVGenerator
 from generators.city.building_generator import SquareBuildingGenerator
 from generators.city.camera_generator import CameraGenerator
-from generators.city.simple_camera_area_generator import SimpleCameraAreaGenerator
 from generators.city.world_generator import SquareWorldGenerator
-from sensors.cameras.camera import Camera
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
 
@@ -13,12 +11,10 @@ if __name__ == "__main__":
         max_x=150,
         min_y=-150,
         max_y=150,
-        average_height=20,
-        min_height=5,
-        max_height=100,
-        average_side=15,
-        min_side=10,
-        max_side=50
+        peak_height=20,
+        scale_height=5,
+        peak_side=15,
+        scale_side=5,
     )
     exclude_areas = [
         Area([
@@ -57,16 +53,17 @@ if __name__ == "__main__":
         max_x=150,
         min_y=-150,
         max_y=150,
-        average_height=20,
-        min_height=5,
-        max_height=100,
-        num_of_cameras=100,
+        peek_height=20,
+        scale_height=5,
         initial_q=0.5,
         obsolescence_time=5
     )
     uav_generator = AircraftUAVGenerator(
-        start_coordinate=Coordinate(-100, -100, 30),
-        start_vector=Coordinate(5, 5, 0),
+        min_start_coordinate=Coordinate(-170, -170, 10),
+        max_start_coordinate=Coordinate(170, 170, 150),
+        min_start_vector=Coordinate(-10, -10, 0),
+        max_start_vector=Coordinate(10, 10, 0),
+        keep_start_vector=True,
         num_of_steps=20
     )
 
@@ -80,20 +77,20 @@ if __name__ == "__main__":
         uav_generator=uav_generator
     ).create()[0]
 
-    area = SimpleCameraAreaGenerator(
-        start_coordinate=Coordinate(0, 0),
-        radius=5,
-        cube_side=0.25,
-    ).create()
-    camera = Camera(
-        id=0,
-        world=world,
-        coordinate=Coordinate(0, 0),
-        area=area,
-        initial_q=1,
-        obsolescence_time=10
-    )
-    world.cameras.append(camera)
+    # area = SimpleCameraAreaGenerator(
+    #     start_coordinate=Coordinate(0, 0),
+    #     radius=5,
+    #     cube_side=0.25,
+    # ).create()[0]
+    # camera = Camera(
+    #     id=0,
+    #     world=world,
+    #     coordinate=Coordinate(0, 0),
+    #     area=area,
+    #     initial_q=1,
+    #     obsolescence_time=10
+    # )
+    # world.cameras.append(camera)
     # route = [Cube(x, x, x) for x in range(8)]
     # world.create_uav(route=route)
 

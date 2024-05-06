@@ -57,7 +57,7 @@ class SquareWorld(AbstractWorld, ABC):
             uav.do_step()
 
         for camera in self.cameras:
-            camera.do_measurement()
+            camera.do_measurement(self)
 
     def get_uavs(self) -> list[UAV]:
         return self.uavs
@@ -77,7 +77,6 @@ class SquareWorld(AbstractWorld, ABC):
     ) -> Camera:
         camera = Camera(
             id=len(self.cameras),
-            world=self,
             area=area,
             coordinate=coordinate,
             initial_q=initial_q,
