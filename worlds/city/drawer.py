@@ -5,30 +5,20 @@ from matplotlib.axes import Axes
 from matplotlib.patches import RegularPolygon
 
 from measurements.measurement import Measurement
-from sensors.cameras.camera import Camera
-from sensors.cube import Cube
 from sensors.cube_area import CubeArea
-from uavs.uav import UAV
 from worlds.abstract_world_object import AbstractWorldObject
-from worlds.area import Area
-from worlds.city.building import CityBuilding
+from worlds.city.world import CityWorld
 
 
 class CityDrawer:
 
     def __init__(
         self,
-        buildings: list[CityBuilding],
-        cameras: list[Camera],
-        uavs: list[UAV],
-        exclude_areas: list[Area],
+        world: CityWorld,
         cube_side_size: float,
         path_to_results: str = "results"
     ):
-        self._buildings = buildings
-        self._cameras = cameras
-        self._uavs = uavs
-        self._exclude_areas = exclude_areas
+        self._world = world
         self._cube_side_size = cube_side_size
 
         self._path_to_results = path_to_results
@@ -74,10 +64,10 @@ class CityDrawer:
         # sub_plot = figure.add_subplot(1, 2, 1)
         sub_plot = figure.add_subplot()
 
-        self._draw_objects(sub_plot, self._exclude_areas, "Exclude area")
-        self._draw_objects(sub_plot, self._buildings, "Buildings")
+        self._draw_objects(sub_plot, self._world._exclude_areas, "Exclude area")
+        self._draw_objects(sub_plot, self._world.buildings, "Buildings")
         self._draw_cameras(sub_plot)
-        self._draw_objects(sub_plot, self._uavs, "UAVs")
+        self._draw_objects(sub_plot, self._world.uavs, "UAVs")
 
         plt.xlabel("Step number: " + str(step), fontsize="xx-large")
         sub_plot.set(
@@ -137,17 +127,16 @@ class CityDrawer:
                     numVertices=4,
                     radius=math.sqrt(2 * cube.side * cube.side) / 2,
                     edgecolor="red",
-                    # linewidth=1,
                     facecolor="white",
                     alpha=q,
                 )
                 sub_plot.add_patch(polygon)
 
     def _draw_cameras(self, sub_plot: Axes) -> None:
-        for camera in self._cameras:
+        for camera in self._world.cameras:
             self._draw_measurments(sub_plot, camera.get_all_measurements())
 
-        patches = [camera.create_patch() for camera in self._cameras]
+        patches = [camera.create_patch() for camera in self._world.cameras]
         if len(patches) == 0:
             return
 

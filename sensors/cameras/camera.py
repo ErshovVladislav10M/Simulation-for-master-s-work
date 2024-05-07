@@ -63,8 +63,6 @@ class Camera(AbstractSensor):
             if self.contain(uav.get_coordinate())
         ]
 
-        # if len(uavs_in_area) > 0:
-        #     print("Camera " + str(self.id) + " catch " + str(len(uavs_in_area)) + " uavs")
         for uav in uavs_in_area:
             cube = Cube(uav.get_coordinate(), 1)
             measurement = Measurement([(cube, self._initial_q)], world.actual_step)
