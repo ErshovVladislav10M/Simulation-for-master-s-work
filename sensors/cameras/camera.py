@@ -7,6 +7,7 @@ from matplotlib.path import Path
 
 from measurements.measurement import Measurement
 from sensors.abstract_sensor import AbstractSensor
+from sensors.cube import Cube
 from worlds.abstract_world import AbstractWorld
 from worlds.coodrinate import Coordinate
 from worlds.vector import Vector
@@ -62,9 +63,11 @@ class Camera(AbstractSensor):
             if self.contain(uav.get_coordinate())
         ]
 
+        # if len(uavs_in_area) > 0:
+        #     print("Camera " + str(self.id) + " catch " + str(len(uavs_in_area)) + " uavs")
         for uav in uavs_in_area:
-            cube = (uav.get_coordinate(), self._initial_q)
-            measurement = Measurement([cube], world.actual_step)
+            cube = Cube(uav.get_coordinate(), 1)
+            measurement = Measurement([(cube, self._initial_q)], world.actual_step)
             self._measurements.append(measurement)
 
     def _contain(self, coordinate: Coordinate) -> bool:

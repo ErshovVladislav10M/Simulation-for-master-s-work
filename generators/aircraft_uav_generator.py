@@ -35,7 +35,7 @@ class AircraftUAVGenerator(AbstractGenerator):
         ]
 
         start_vectors = [
-            Coordinate(x, y, z)
+            Vector(x, y, z)
             for x, y, z in zip(
                 self.get_uniform_values(self._min_start_vector.x, self._max_start_vector.x, num_of_objects),
                 self.get_uniform_values(self._min_start_vector.y, self._max_start_vector.y, num_of_objects),

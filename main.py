@@ -1,3 +1,5 @@
+import math
+
 from generators.aircraft_uav_generator import AircraftUAVGenerator
 from generators.city.building_generator import SquareBuildingGenerator
 from generators.city.camera_generator import CameraGenerator
@@ -56,7 +58,11 @@ if __name__ == "__main__":
         max_y=150,
         peek_height=20,
         scale_height=5,
-        initial_q=0.5,
+        min_vector=Vector(-80, -80, -80),
+        max_vector=Vector(80, 80, 20),
+        alpha=2 * math.pi / 3,
+        beta=math.pi / 2,
+        initial_q=0.3,
         obsolescence_time=5
     )
     uav_generator = AircraftUAVGenerator(

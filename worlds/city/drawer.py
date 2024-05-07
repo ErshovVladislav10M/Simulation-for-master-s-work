@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.patches import RegularPolygon
 
+from measurements.measurement import Measurement
 from sensors.cameras.camera import Camera
+from sensors.cube import Cube
 from sensors.cube_area import CubeArea
 from uavs.uav import UAV
 from worlds.abstract_world_object import AbstractWorldObject
@@ -127,9 +129,23 @@ class CityDrawer:
             )
             sub_plot.add_patch(polygon)
 
+    def _draw_measurments(self, sub_plot: Axes, measurements: list[Measurement]) -> None:
+        for measurement in measurements:
+            for cube, q in measurement.cubes:
+                polygon = RegularPolygon(
+                    xy=(cube.coordinate.x, cube.coordinate.y),
+                    numVertices=4,
+                    radius=math.sqrt(2 * cube.side * cube.side) / 2,
+                    edgecolor="red",
+                    # linewidth=1,
+                    facecolor="white",
+                    alpha=q,
+                )
+                sub_plot.add_patch(polygon)
+
     def _draw_cameras(self, sub_plot: Axes) -> None:
-        # for camera in self._cameras:
-        #     self._draw_cube_area(sub_plot, camera._area)
+        for camera in self._cameras:
+            self._draw_measurments(sub_plot, camera.get_all_measurements())
 
         patches = [camera.create_patch() for camera in self._cameras]
         if len(patches) == 0:
