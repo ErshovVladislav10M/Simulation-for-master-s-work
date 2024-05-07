@@ -9,8 +9,16 @@ class AbstractSensor(AbstractWorldObject):
 
     def __init__(self, id: int):
         self.id = id
-        self._measurements = []
+        self._measurements: list[Measurement] = []
         super().__init__()
+
+    @abstractmethod
+    def rec_measurements(self, world: AbstractWorld, measurements: list[Measurement]) -> None:
+        ...
+
+    @abstractmethod
+    def send_measurements(self, world: AbstractWorld) -> list[Measurement]:
+        ...
 
     @abstractmethod
     def do_measurement(self, world: AbstractWorld):

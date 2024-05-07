@@ -1,24 +1,29 @@
-import math
-
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
-from matplotlib.patches import RegularPolygon
 
 from measurements.measurement import Measurement
-from sensors.cube_area import CubeArea
+from sensors.cameras.camera import Camera
+from uavs.uav import UAV
 from worlds.abstract_world_object import AbstractWorldObject
-from worlds.city.world import CityWorld
+from worlds.area import Area
+from worlds.city.building import CityBuilding
 
 
 class CityDrawer:
 
     def __init__(
         self,
-        world: CityWorld,
+        buildings: list[CityBuilding],
+        cameras: list[Camera],
+        uavs: list[UAV],
+        exclude_areas: list[Area],
         cube_side_size: float,
         path_to_results: str = "results"
     ):
-        self._world = world
+        self._buildings = buildings
+        self._cameras = cameras
+        self._uavs = uavs
+        self._exclude_areas = exclude_areas
         self._cube_side_size = cube_side_size
 
         self._path_to_results = path_to_results
@@ -64,10 +69,10 @@ class CityDrawer:
         # sub_plot = figure.add_subplot(1, 2, 1)
         sub_plot = figure.add_subplot()
 
-        self._draw_objects(sub_plot, self._world._exclude_areas, "Exclude area")
-        self._draw_objects(sub_plot, self._world.buildings, "Buildings")
+        self._draw_objects(sub_plot, self._exclude_areas, "Exclude area")
+        self._draw_objects(sub_plot, self._buildings, "Buildings")
         self._draw_cameras(sub_plot)
-        self._draw_objects(sub_plot, self._world.uavs, "UAVs")
+        self._draw_objects(sub_plot, self._uavs, "UAVs")
 
         plt.xlabel("Step number: " + str(step), fontsize="xx-large")
         sub_plot.set(
@@ -105,38 +110,19 @@ class CityDrawer:
         )
         plt.close()
 
-    def _draw_cube_area(self, sub_plot: Axes, area: CubeArea) -> None:
-        for cube in area.cubes:
-            polygon = RegularPolygon(
-                xy=(cube.coordinate.x, cube.coordinate.y),
-                numVertices=4,
-                radius=math.sqrt(2 * cube.side * cube.side) / 2,
-                orientation=0.25 * math.pi,
-                edgecolor="blue",
-                linewidth=0,
-                facecolor="white",
-                hatch="xx",
-            )
-            sub_plot.add_patch(polygon)
-
     def _draw_measurments(self, sub_plot: Axes, measurements: list[Measurement]) -> None:
         for measurement in measurements:
-            for cube, q in measurement.cubes:
-                polygon = RegularPolygon(
-                    xy=(cube.coordinate.x, cube.coordinate.y),
-                    numVertices=4,
-                    radius=math.sqrt(2 * cube.side * cube.side) / 2,
-                    edgecolor="red",
-                    facecolor="white",
-                    alpha=q,
-                )
-                sub_plot.add_patch(polygon)
+            for cube in measurement.cubes:
+                patch = cube.create_patch()
+
+                if cube.q > 0.5:
+                    sub_plot.add_patch(patch)
 
     def _draw_cameras(self, sub_plot: Axes) -> None:
-        for camera in self._world.cameras:
+        for camera in self._cameras:
             self._draw_measurments(sub_plot, camera.get_all_measurements())
 
-        patches = [camera.create_patch() for camera in self._world.cameras]
+        patches = [camera.create_patch() for camera in self._cameras]
         if len(patches) == 0:
             return
 

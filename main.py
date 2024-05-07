@@ -9,6 +9,8 @@ from worlds.coodrinate import Coordinate
 from worlds.vector import Vector
 
 if __name__ == "__main__":
+    num_of_steps = 40
+
     build_generator = SquareBuildingGenerator(
         min_x=-150,
         max_x=150,
@@ -62,7 +64,8 @@ if __name__ == "__main__":
         max_vector=Vector(80, 80, 20),
         alpha=2 * math.pi / 3,
         beta=math.pi / 2,
-        initial_q=0.3,
+        cube_side=3,
+        initial_q=0.2,
         obsolescence_time=5
     )
     uav_generator = AircraftUAVGenerator(
@@ -71,11 +74,11 @@ if __name__ == "__main__":
         min_start_vector=Vector(-10, -10, 0),
         max_start_vector=Vector(10, 10, 0),
         keep_start_vector=True,
-        num_of_steps=20
+        num_of_steps=num_of_steps
     )
 
     world = CityWorldGenerator(
-        num_steps=20,
+        num_of_steps=num_of_steps,
         create_step_images=True,
         exclude_areas=exclude_areas,
         cube_side_size=1,

@@ -17,7 +17,7 @@ class AbstractWorld(ABC, threading.Thread):
         pass
 
     @abstractmethod
-    def sent_messages(self) -> None:
+    def send_messages(self) -> None:
         pass
 
     @abstractmethod

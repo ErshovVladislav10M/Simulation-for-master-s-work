@@ -22,6 +22,7 @@ class Camera(AbstractSensor):
         vector: Vector,
         alpha: float,
         beta: float,
+        cube_side: float,
         initial_q: float,
         obsolescence_time: int
     ):
@@ -35,6 +36,8 @@ class Camera(AbstractSensor):
         x, y = Vector.get_vector(self._vector.x, self._vector.y, -0.5 * self._alpha)
         self._right_coordinate = self._coordinate + Coordinate(x, y, 0)
 
+        self._cube_side = cube_side
+        self._cube_diagonal = cube_side * math.sqrt(2)
         self._initial_q = initial_q
         self._obsolescence_time = obsolescence_time
         super().__init__(id)
@@ -56,6 +59,14 @@ class Camera(AbstractSensor):
             alpha=0.2
         )
 
+    def rec_measurements(self, world: AbstractWorld, measurements: list[Measurement]) -> None:
+        for measurement in measurements:
+            for self_measurement in self.get_actual_measurements(world.actual_step):
+                self_measurement.compare_and_update(measurement)
+
+    def send_measurements(self, world: AbstractWorld) -> list[Measurement]:
+        return self.get_actual_measurements(world.actual_step)
+
     def do_measurement(self, world: AbstractWorld) -> None:
         uavs_in_area = [
             uav
@@ -64,26 +75,20 @@ class Camera(AbstractSensor):
         ]
 
         for uav in uavs_in_area:
-            cube = Cube(uav.get_coordinate(), 1)
-            measurement = Measurement([(cube, self._initial_q)], world.actual_step)
+            measurement = Measurement(self.id, self._get_cubes(uav.get_coordinate()), world.actual_step)
             self._measurements.append(measurement)
 
-    def _contain(self, coordinate: Coordinate) -> bool:
-        return np.isclose(
-            self._s_triangle(self._left_coordinate, self._coordinate, self._right_coordinate),
-            self._s_triangle(coordinate, self._coordinate, self._right_coordinate)
-            + self._s_triangle(self._left_coordinate, coordinate, self._right_coordinate)
-            + self._s_triangle(self._left_coordinate, self._coordinate, coordinate)
-        )
+    def _get_cubes(self, coordinate: Coordinate) -> list[(Cube, float)]:
+        vector = Vector.of(coordinate - self._coordinate)
+        vector_delta = (vector / vector.length()) * self._cube_diagonal
 
-    @staticmethod
-    def _s_triangle(coordinate_1: Coordinate, coordinate_2: Coordinate, coordinate_3: Coordinate):
-        side_a = coordinate_1.distance(coordinate_2)
-        side_b = coordinate_2.distance(coordinate_3)
-        side_c = coordinate_3.distance(coordinate_1)
-        p = 0.5 * (side_a + side_b + side_c)
+        coordinate = Coordinate(self._coordinate.x, self._coordinate.y, self._coordinate.z)
+        cubes = []
+        for _ in range(int(vector.length() / self._cube_diagonal)):
+            cubes.append(Cube(coordinate, self._cube_side, self._initial_q))
+            coordinate += vector_delta
 
-        return math.sqrt(p * (p - side_a) * (p - side_b) * (p - side_c))
+        return cubes
 
     def get_all_measurements(self) -> list[Measurement]:
         return self._measurements

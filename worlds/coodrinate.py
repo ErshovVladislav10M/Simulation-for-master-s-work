@@ -39,8 +39,11 @@ class Coordinate:
             self.z - other.z,
         )
 
-    def __mul__(self, other) -> float:
-        return self.x * other.x + self.y * other.y + self.z * other.z
+    def __mul__(self, other):
+        if isinstance(other, Coordinate):
+            return self.x * other.x + self.y * other.y + self.z * other.z
+        else:
+            return Coordinate(self.x * other, self.y * other, self.z * other)
 
     def __str__(self) -> str:
         return "[" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + "]"

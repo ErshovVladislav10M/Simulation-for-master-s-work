@@ -5,6 +5,9 @@ from worlds.coodrinate import Coordinate
 
 class Vector(Coordinate):
 
+    def length(self) -> float:
+        return math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2) + math.pow(self.z, 2))
+
     def get_angle(self, other) -> float:
         vector_1_length = math.sqrt(
             math.pow(self.x, 2)
@@ -28,3 +31,19 @@ class Vector(Coordinate):
             first * math.cos(angle) - second * math.sin(angle),
             second * math.cos(angle) + first * math.sin(angle)
         )
+
+    @staticmethod
+    def of(coordinate: Coordinate):
+        return Vector(coordinate.x, coordinate.y, coordinate.z)
+
+    def __mul__(self, other):
+        if isinstance(other, Coordinate):
+            return self.x * other.x + self.y * other.y + self.z * other.z
+        else:
+            return Coordinate(self.x * other, self.y * other, self.z * other)
+
+    def __truediv__(self, other: float):
+        return Vector(self.x / other, self.y / other, self.z / other)
+
+    def __floordiv__(self, other: float):
+        return Vector(self.x // other, self.y // other, self.z // other)

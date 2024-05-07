@@ -21,6 +21,7 @@ class CameraGenerator(AbstractGenerator):
         max_vector: Vector,
         alpha: float,
         beta: float,
+        cube_side: float,
         initial_q: float,
         obsolescence_time: int
     ):
@@ -34,6 +35,7 @@ class CameraGenerator(AbstractGenerator):
         self._max_vector = max_vector
         self._alpha = alpha
         self._beta = beta
+        self._cube_side = cube_side
         self._initial_q = initial_q
         self._obsolescence_time = obsolescence_time
 
@@ -54,6 +56,7 @@ class CameraGenerator(AbstractGenerator):
                 vector=vector,
                 alpha=self._alpha,
                 beta=self._beta,
+                cube_side=self._cube_side,
                 initial_q=self._initial_q,
                 obsolescence_time=self._obsolescence_time
             )
