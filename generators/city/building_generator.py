@@ -1,40 +1,26 @@
-import numpy as np
-from scipy.stats import norm
-
+from distributions.abstract_distribution import AbstractDistribution
 from generators.abstract_generator import AbstractGenerator
-from worlds.coodrinate import Coordinate
 from worlds.city.building import CityBuilding
 
 
-class SquareBuildingGenerator(AbstractGenerator):
+class CityBuildingGenerator(AbstractGenerator):
 
     def __init__(
         self,
-        min_x: int,
-        max_x: int,
-        min_y: int,
-        max_y: int,
-        peak_height: int,
-        scale_height: int,
-        peak_side: int,
-        scale_side: int
+        coordinate_distribution: AbstractDistribution,
+        height_distribution: AbstractDistribution,
+        side_distribution: AbstractDistribution
     ):
-        self._min_x = min_x
-        self._max_x = max_x
-        self._min_y = min_y
-        self._max_y = max_y
-        self._peak_height = peak_height
-        self._scale_height = scale_height
-        self._peak_side = peak_side
-        self._scale_side = scale_side
+        self._coordinate_distribution = coordinate_distribution
+        self._height_distribution = height_distribution
+        self._side_distribution = side_distribution
 
-    def create(self, num_of_objects=1) -> list[CityBuilding]:
+    def create(self, num_of_objects: int = 1) -> list[CityBuilding]:
         return [
-            CityBuilding(Coordinate(x=x, y=y, z=0), height, side)
-            for x, y, height, side in zip(
-                np.random.randint(self._min_x, self._max_x, num_of_objects),
-                np.random.randint(self._min_y, self._max_y, num_of_objects),
-                norm.rvs(loc=self._peak_height, scale=self._scale_height, size=num_of_objects),
-                norm.rvs(loc=self._peak_side, scale=self._scale_side, size=num_of_objects)
+            CityBuilding(coordinate, height, side)
+            for coordinate, height, side in zip(
+                self._coordinate_distribution.get_values(num_of_objects),
+                self._height_distribution.get_values(num_of_objects),
+                self._side_distribution.get_values(num_of_objects),
             )
         ]

@@ -4,6 +4,7 @@ from matplotlib.axes import Axes
 from measurements.measurement import Measurement
 from sensors.cameras.camera import Camera
 from uavs.uav import UAV
+from worlds.abstract_world import AbstractWorld
 from worlds.abstract_world_object import AbstractWorldObject
 from worlds.area import Area
 from worlds.city.building import CityBuilding
@@ -13,6 +14,7 @@ class CityDrawer:
 
     def __init__(
         self,
+        world: AbstractWorld,
         buildings: list[CityBuilding],
         cameras: list[Camera],
         uavs: list[UAV],
@@ -20,6 +22,7 @@ class CityDrawer:
         cube_side_size: float,
         path_to_results: str = "results"
     ):
+        self._world = world
         self._buildings = buildings
         self._cameras = cameras
         self._uavs = uavs
@@ -76,14 +79,30 @@ class CityDrawer:
 
         plt.xlabel("Step number: " + str(step), fontsize="xx-large")
         sub_plot.set(
-            xlim=(-200, 200),
-            ylim=(-200, 200),
+            xlim=(-self._world.size, self._world.size),
+            ylim=(-self._world.size, self._world.size),
         )
 
-        # plt.xticks([])
-        # plt.yticks([])
+        plt.xticks([])
+        plt.yticks([])
         plt.legend(loc="upper right", ncol=2, fontsize="x-large")
 
+        [uav.get_coordinate() for uav in self._uavs]
+        cubes = []
+        for camera in self._cameras:
+            for measurement in camera.get_actual_measurements(step):
+                for cube in measurement.cubes:
+                    if cube.q > 0.7:
+                        cubes.append(cube)
+
+        count_detected_uav = 0
+        for uav in self._uavs:
+            for cube in cubes:
+                if cube.contain(uav.get_coordinate(), radius=10):
+                    count_detected_uav += 1
+                    break
+
+        print("Detected " + str(count_detected_uav) + " of " + str(len(self._uavs)))
         # plt.subplot(1, 2, 2)
         # plt.xlabel("Time steps")
         # plt.ylabel("Conventional units")
@@ -91,8 +110,8 @@ class CityDrawer:
         # plt.ylim(-2, self.num_of_titles_side * len(agents))
         # plt.plot(self.steps, self.accuracy, "r-", label="Accuracy")
         # plt.plot(self.steps, self.max_diameter, "b-", label="Diameter")
-        #
-        # plt.legend(loc="best")
+
+        plt.legend(loc="best")
 
         # if step == num_steps - 1:
         #     f = open(self._path_to_results + "/accuracy.txt", "w")
@@ -112,10 +131,14 @@ class CityDrawer:
 
     def _draw_measurments(self, sub_plot: Axes, measurements: list[Measurement]) -> None:
         for measurement in measurements:
+            if self._world.actual_step - measurement.t > 0:
+                continue
+
             for cube in measurement.cubes:
                 patch = cube.create_patch()
 
                 if cube.q > 0.5:
+                    # patch.set_alpha(1 - 0.2 * (self._world.actual_step - measurement.t))
                     sub_plot.add_patch(patch)
 
     def _draw_cameras(self, sub_plot: Axes) -> None:
@@ -128,8 +151,8 @@ class CityDrawer:
 
         patches[0].set_label("Cameras")
 
-        for patch in patches:
-            sub_plot.add_patch(patch)
+        # for patch in patches:
+        #     sub_plot.add_patch(patch)
 
     @staticmethod
     def _draw_objects(

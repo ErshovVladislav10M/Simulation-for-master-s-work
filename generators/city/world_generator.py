@@ -1,6 +1,6 @@
 from generators.abstract_generator import AbstractGenerator
 from generators.aircraft_uav_generator import AircraftUAVGenerator
-from generators.city.building_generator import SquareBuildingGenerator
+from generators.city.building_generator import CityBuildingGenerator
 from generators.city.camera_generator import CameraGenerator
 from worlds.abstract_world_object import AbstractWorldObject
 from worlds.area import Area
@@ -13,14 +13,16 @@ class CityWorldGenerator(AbstractGenerator):
     def __init__(
         self,
         num_of_steps: int,
+        world_size: float,
         create_step_images: bool,
         exclude_areas: list[Area],
         cube_side_size: float,
-        building_generator: SquareBuildingGenerator,
+        building_generator: CityBuildingGenerator,
         camera_generator: CameraGenerator,
         uav_generator: AircraftUAVGenerator
     ):
         self._num_of_steps = num_of_steps
+        self._world_size = world_size
         self._create_step_images = create_step_images
         self._exclude_areas = exclude_areas
         self._cube_side_size = cube_side_size
@@ -31,12 +33,13 @@ class CityWorldGenerator(AbstractGenerator):
     def create(self, num_of_objects=1) -> list[CityWorld]:
         world = CityWorld(
             self._num_of_steps,
+            self._world_size,
             self._create_step_images,
             self._exclude_areas,
             self._cube_side_size
         )
 
-        for building in self._building_generator.create(100):
+        for building in self._building_generator.create(200):
             if self._check_on_contains(building.coordinate, building.side, self._exclude_areas):
                 continue
 
@@ -45,7 +48,7 @@ class CityWorldGenerator(AbstractGenerator):
 
             world.buildings.append(building)
 
-        for camera in self._camera_generator.create(100):
+        for camera in self._camera_generator.create(4 * len(world.buildings)):
             world.cameras.append(camera)
 
         for uav in self._uav_generator.create(10):

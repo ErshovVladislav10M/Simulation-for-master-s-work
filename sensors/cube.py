@@ -31,10 +31,10 @@ class Cube(AbstractWorldObject):
         if coordinate is None:
             return False
 
-        if self.coordinate.z + 0.5 * self.side < coordinate.z:
-            return False
-        if self.coordinate.z - 0.5 * self.side > coordinate.z:
-            return False
+        # if self.coordinate.z + 0.5 * self.side < coordinate.z:
+        #     return False
+        # if self.coordinate.z - 0.5 * self.side > coordinate.z:
+        #     return False
 
         return super().contain(coordinate, radius)
 

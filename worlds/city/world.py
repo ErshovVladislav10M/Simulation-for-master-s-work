@@ -14,17 +14,19 @@ class CityWorld(AbstractWorld, ABC):
     def __init__(
         self,
         num_steps: int,
+        size: float,
         create_step_images: bool,
         exclude_areas: list[Area],
         cube_side_size: float
     ):
-        super().__init__(num_steps, create_step_images)
+        super().__init__(num_steps, size, create_step_images)
         self.buildings: list[CityBuilding] = []
         self.cameras: list[Camera] = []
         self.uavs: list[UAV] = []
         self._exclude_areas = exclude_areas
         self._cube_side_size = cube_side_size
         self._drawer = CityDrawer(
+            self,
             self.buildings,
             self.cameras,
             self.uavs,
@@ -40,7 +42,8 @@ class CityWorld(AbstractWorld, ABC):
             self.do_step()
 
             self.rec_messages()
-            self.send_messages()
+            for i in range(10):
+                self.send_messages()
 
             if self._create_step_images:
                 self._drawer.draw_plane(self._num_steps, self.actual_step)

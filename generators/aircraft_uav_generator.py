@@ -1,5 +1,6 @@
 from scipy.stats import norm
 
+from distributions.abstract_distribution import AbstractDistribution
 from generators.abstract_generator import AbstractGenerator
 from uavs.uav import UAV
 from worlds.coodrinate import Coordinate
@@ -10,42 +11,23 @@ class AircraftUAVGenerator(AbstractGenerator):
 
     def __init__(
         self,
-        min_start_coordinate: Coordinate,
-        max_start_coordinate: Coordinate,
-        min_start_vector: Vector,
-        max_start_vector: Vector,
+        start_coordinate_distribution: AbstractDistribution,
+        start_vector_distribution: AbstractDistribution,
         keep_start_vector: bool,
         num_of_steps: int
     ):
-        self._min_start_coordinate = min_start_coordinate
-        self._max_start_coordinate = max_start_coordinate
-        self._min_start_vector = min_start_vector
-        self._max_start_vector = max_start_vector
+        self._start_coordinate_distribution = start_coordinate_distribution
+        self._start_vector_distribution = start_vector_distribution
         self._keep_start_vector = keep_start_vector
         self._num_of_steps = num_of_steps
 
     def create(self, num_of_objects=1) -> list[UAV]:
-        start_coordinates = [
-            Coordinate(x, y, z)
-            for x, y, z in zip(
-                self.get_uniform_values(self._min_start_coordinate.y, self._max_start_coordinate.y, num_of_objects),
-                self.get_uniform_values(self._min_start_coordinate.y, self._max_start_coordinate.y, num_of_objects),
-                self.get_uniform_values(self._min_start_coordinate.z, self._max_start_coordinate.z, num_of_objects)
-            )
-        ]
-
-        start_vectors = [
-            Vector(x, y, z)
-            for x, y, z in zip(
-                self.get_uniform_values(self._min_start_vector.x, self._max_start_vector.x, num_of_objects),
-                self.get_uniform_values(self._min_start_vector.y, self._max_start_vector.y, num_of_objects),
-                self.get_uniform_values(self._min_start_vector.z, self._max_start_vector.z, num_of_objects)
-            )
-        ]
-
         return [
             UAV(self._create_route(start_coordinate, start_vector))
-            for start_coordinate, start_vector in zip(start_coordinates, start_vectors)
+            for start_coordinate, start_vector in zip(
+                self._start_coordinate_distribution.get_values(num_of_objects),
+                self._start_vector_distribution.get_values(num_of_objects)
+            )
         ]
 
     def _create_route(
