@@ -28,6 +28,7 @@ class Camera(AbstractSensor):
         obsolescence_time: int
     ):
         self._coordinate = coordinate
+        self._distance = distance
 
         left_vector = vector.rotate(alpha=0.5 * alpha, beta=0)
         self._left_coordinate = coordinate + left_vector / left_vector.length() * distance
@@ -108,7 +109,7 @@ class Camera(AbstractSensor):
 
         coordinate = Coordinate(self._coordinate.x, self._coordinate.y, self._coordinate.z)
         cubes = []
-        for _ in range(int(vector.length() / self._cube_diagonal)):
+        for _ in range(int(self._distance / self._cube_diagonal)):
             cubes.append(Cube(coordinate, self._cube_side, self._initial_q))
             coordinate += vector_delta
 

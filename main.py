@@ -56,7 +56,7 @@ def get_camera_generator() -> CameraGenerator:
 def get_uav_generator(num_of_steps: int) -> AircraftUAVGenerator:
     coordinate_distribution = UniformCoordinateDistribution(
         min_value=Coordinate(-170, -170, 10),
-        max_value=Coordinate(170, 170, 11)
+        max_value=Coordinate(170, 170, 10)
     )
     vector_distribution = UniformVectorDistribution(
         min_value=Vector(-10, -10, 0),
