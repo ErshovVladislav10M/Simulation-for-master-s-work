@@ -19,7 +19,6 @@ class CityDrawer:
         cameras: list[Camera],
         uavs: list[UAV],
         exclude_areas: list[Area],
-        cube_side_size: float,
         path_to_results: str = "results"
     ):
         self._world = world
@@ -27,7 +26,6 @@ class CityDrawer:
         self._cameras = cameras
         self._uavs = uavs
         self._exclude_areas = exclude_areas
-        self._cube_side_size = cube_side_size
 
         self._path_to_results = path_to_results
 

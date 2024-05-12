@@ -16,7 +16,6 @@ class CityWorldGenerator(AbstractGenerator):
         world_size: float,
         create_step_images: bool,
         exclude_areas: list[Area],
-        cube_side_size: float,
         building_generator: CityBuildingGenerator,
         camera_generator: CameraGenerator,
         uav_generator: AircraftUAVGenerator
@@ -25,7 +24,6 @@ class CityWorldGenerator(AbstractGenerator):
         self._world_size = world_size
         self._create_step_images = create_step_images
         self._exclude_areas = exclude_areas
-        self._cube_side_size = cube_side_size
         self._building_generator = building_generator
         self._camera_generator = camera_generator
         self._uav_generator = uav_generator
@@ -35,8 +33,7 @@ class CityWorldGenerator(AbstractGenerator):
             self._num_of_steps,
             self._world_size,
             self._create_step_images,
-            self._exclude_areas,
-            self._cube_side_size
+            self._exclude_areas
         )
 
         for building in self._building_generator.create(200):

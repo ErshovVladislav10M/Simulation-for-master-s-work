@@ -8,8 +8,6 @@ from generators.aircraft_uav_generator import AircraftUAVGenerator
 from generators.city.building_generator import CityBuildingGenerator
 from generators.city.camera_generator import CameraGenerator
 from generators.city.world_generator import CityWorldGenerator
-from sensors.cameras.camera import Camera
-from uavs.uav import UAV
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
 from worlds.vector import Vector
@@ -118,35 +116,9 @@ if __name__ == "__main__":
         world_size=200,
         create_step_images=True,
         exclude_areas=get_exclude_areas(),
-        cube_side_size=1,
         building_generator=get_building_generator(),
         camera_generator=get_camera_generator(),
         uav_generator=get_uav_generator(num_of_steps)
     ).create()[0]
-
-    # camera = Camera(
-    #     id=1,
-    #     coordinate=Coordinate(10, 10, 10),
-    #     vector=Vector(10, 10, 0),
-    #     alpha=0.25 * math.pi,
-    #     beta=0.25 * math.pi,
-    #     cube_side=4,
-    #     initial_q=0.6,
-    #     obsolescence_time=1
-    # )
-    # world.cameras.append(camera)
-    #
-    # route = [
-    #     Coordinate(11, 11, 10),
-    #     Coordinate(12, 12, 10),
-    #     Coordinate(13, 13, 10),
-    #     Coordinate(14, 14, 10),
-    #     Coordinate(15, 15, 10),
-    #     Coordinate(16, 16, 10),
-    #     Coordinate(17, 17, 10),
-    #     Coordinate(18, 18, 10),
-    #     Coordinate(19, 19, 10),
-    # ]
-    # world.uavs.append(UAV(route=route))
 
     world.run()
