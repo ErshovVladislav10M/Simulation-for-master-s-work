@@ -38,7 +38,7 @@ def get_camera_generator() -> CameraGenerator:
         min_value=Vector(-80, -80, 0),
         max_value=Vector(80, 80, 0)
     )
-    distance_distribution = UniformFloatDistribution(min_value=100, max_value=100)
+    distance_distribution = UniformFloatDistribution(min_value=70, max_value=70)
 
     return CameraGenerator(
         coordinate_distribution=coordinate_distribution,

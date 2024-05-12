@@ -28,16 +28,23 @@ class Camera(AbstractSensor):
         obsolescence_time: int
     ):
         self._coordinate = coordinate
+        self._vector = vector
         self._distance = distance
 
-        left_vector = vector.rotate(alpha=0.5 * alpha, beta=0)
-        self._left_coordinate = coordinate + left_vector / left_vector.length() * distance
-        right_vector = vector.rotate(alpha=-0.5 * alpha, beta=0)
-        self._right_coordinate = coordinate + right_vector / right_vector.length() * distance
-        up_vector = vector.rotate(alpha=0, beta=0.5 * beta)
-        self._up_coordinate = coordinate + up_vector / up_vector.length() * distance
-        down_vector = vector.rotate(alpha=0, beta=-0.5 * beta)
-        self._down_coordinate = coordinate + down_vector / down_vector.length() * distance
+        self._alpha_coordinates = [
+            self._get_coordinate(alpha=0.25 * alpha, beta=0),
+            self._get_coordinate(alpha=0.5 * alpha, beta=0),
+            self._coordinate,
+            self._get_coordinate(alpha=-0.5 * alpha, beta=0),
+            self._get_coordinate(alpha=-0.25 * alpha, beta=0),
+        ]
+        self._beta_coordinates = [
+            self._get_coordinate(alpha=0, beta=0.25 * beta),
+            self._get_coordinate(alpha=0, beta=0.5 * beta),
+            self._coordinate,
+            self._get_coordinate(alpha=0, beta=-0.5 * beta),
+            self._get_coordinate(alpha=0, beta=-0.25 * beta),
+        ]
 
         self._cube_side = cube_side
         self._cube_diagonal = cube_side * math.sqrt(2)
@@ -45,14 +52,12 @@ class Camera(AbstractSensor):
         self._obsolescence_time = obsolescence_time
         super().__init__(id)
 
+    def _get_coordinate(self, alpha: float, beta: float) -> Coordinate:
+        rotated = self._vector.rotate(alpha, beta)
+        return self._coordinate + rotated / rotated.length() * self._distance
+
     def create_xy_patch(self) -> PathPatch:
-        vertices = np.array(
-            [
-                (self._left_coordinate.x, self._left_coordinate.y),
-                (self._coordinate.x, self._coordinate.y),
-                (self._right_coordinate.x, self._right_coordinate.y)
-            ]
-        )
+        vertices = np.array([(coordinate.x, coordinate.y) for coordinate in self._alpha_coordinates])
         path = Path(vertices=vertices)
 
         return matplotlib.patches.PathPatch(
@@ -63,25 +68,11 @@ class Camera(AbstractSensor):
         )
 
     def create_xz_patch(self) -> PathPatch:
-        vertices = np.array(
-            [
-                (self._up_coordinate.x, self._up_coordinate.z),
-                (self._coordinate.x, self._coordinate.z),
-                (self._down_coordinate.x, self._down_coordinate.z)
-            ]
-        )
-
+        vertices = np.array([(coordinate.x, coordinate.z) for coordinate in self._beta_coordinates])
         return matplotlib.patches.PathPatch(Path(vertices=vertices))
 
     def create_yz_patch(self) -> PathPatch:
-        vertices = np.array(
-            [
-                (self._up_coordinate.y, self._up_coordinate.z),
-                (self._coordinate.y, self._coordinate.z),
-                (self._down_coordinate.y, self._down_coordinate.z)
-            ]
-        )
-
+        vertices = np.array([(coordinate.y, coordinate.z) for coordinate in self._beta_coordinates])
         return matplotlib.patches.PathPatch(Path(vertices=vertices))
 
     def rec_measurements(self, world: AbstractWorld, measurements: list[Measurement]) -> None:

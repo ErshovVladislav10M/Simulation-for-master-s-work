@@ -1,5 +1,8 @@
+import math
+
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
+from matplotlib.patches import Arc
 
 from measurements.measurement import Measurement
 from sensors.cameras.camera import Camera
@@ -8,6 +11,7 @@ from worlds.abstract_world import AbstractWorld
 from worlds.abstract_world_object import AbstractWorldObject
 from worlds.area import Area
 from worlds.city.building import CityBuilding
+from worlds.vector import Vector
 
 
 class CityDrawer:
@@ -70,10 +74,15 @@ class CityDrawer:
         # sub_plot = figure.add_subplot(1, 2, 1)
         sub_plot = figure.add_subplot()
 
-        self._draw_objects(sub_plot, self._exclude_areas, "Exclude area")
-        self._draw_objects(sub_plot, self._buildings, "Buildings")
+        # self._draw_objects(sub_plot, self._exclude_areas, "Excluded area")
+        self._draw_objects(sub_plot, self._exclude_areas, "Исключенная область")
+        # self._draw_objects(sub_plot, self._buildings, "Buildings")
+        self._draw_objects(sub_plot, self._buildings, "Строения")
         self._draw_cameras(sub_plot)
-        self._draw_objects(sub_plot, self._uavs, "UAVs")
+        # self._draw_objects(sub_plot, self._uavs, "UAVs")
+        self._draw_objects(sub_plot, self._uavs, "БПЛА")
+
+        self._detect(step)
 
         plt.xlabel("Step number: " + str(step), fontsize="xx-large")
         sub_plot.set(
@@ -84,25 +93,8 @@ class CityDrawer:
         plt.xticks([])
         plt.yticks([])
 
-        plt.legend(loc="upper right", ncol=2, fontsize="x-large")
+        plt.legend(loc="upper right", ncol=1, fontsize="large")
         # plt.legend(loc="best")
-
-        [uav.get_coordinate() for uav in self._uavs]
-        cubes = []
-        for camera in self._cameras:
-            for measurement in camera.get_actual_measurements(step):
-                for cube in measurement.cubes:
-                    if cube.q > 0.7:
-                        cubes.append(cube)
-
-        count_detected_uav = 0
-        for uav in self._uavs:
-            for cube in cubes:
-                if cube.contain(uav.get_coordinate(), radius=10):
-                    count_detected_uav += 1
-                    break
-
-        print("Detected " + str(count_detected_uav) + " of " + str(len(self._uavs)))
 
         # plt.subplot(1, 2, 2)
         # plt.xlabel("Time steps")
@@ -128,6 +120,29 @@ class CityDrawer:
         )
         plt.close()
 
+    def _detect(self, step: int):
+        cubes = []
+        for camera in self._cameras:
+            for measurement in camera.get_actual_measurements(step):
+                for cube in measurement.cubes:
+                    if cube.q > 0.7:
+                        cubes.append(cube)
+
+        actual_uavs = [
+            uav
+            for uav in self._uavs
+            if -200 < uav.get_coordinate().x < 200 and -200 < uav.get_coordinate().y < 200
+        ]
+
+        count_detected_uav = 0
+        for uav in actual_uavs:
+            for cube in cubes:
+                if cube.contain(uav.get_coordinate(), radius=10):
+                    count_detected_uav += 1
+                    break
+
+        print("Detected " + str(count_detected_uav) + " of " + str(len(actual_uavs)))
+
     def _draw_measurements(self, sub_plot: Axes, measurements: list[Measurement]) -> None:
         for measurement in measurements:
             if self._world.actual_step - measurement.t > 0:
@@ -145,13 +160,34 @@ class CityDrawer:
         for camera in self._cameras:
             self._draw_measurements(sub_plot, camera.get_all_measurements())
 
-        patches = [camera.create_xy_patch() for camera in self._cameras]
-        if len(patches) == 0:
-            return
+        # patches = [camera.create_xy_patch() for camera in self._cameras]
+        # if len(patches) == 0:
+        #     return
+        #
+        # patches[0].set_label("Камеры")
 
-        patches[0].set_label("Cameras")
-
-        # for patch in patches:
+        # for patch, camera in zip(patches, self._cameras):
+        #     coord = camera._alpha_coordinates[1]
+        #     left = camera._alpha_coordinates[0]
+        #     right = camera._alpha_coordinates[2]
+        #     theta1 = Vector.of(right - coord).get_angle(Vector(0, 1, 0)) / math.pi * 180
+        #     theta2 = Vector.of(left - coord).get_angle(Vector(0, 1, 0)) / math.pi * 180
+        #     if coord.x > right.x:
+        #         theta1 = 180 - theta1
+        #     if coord.x > left.x:
+        #         theta2 = 180 - theta2
+        #     arc = Arc(
+        #         xy=(coord.x, coord.y),
+        #         width=2 * camera._distance,
+        #         height=2 * camera._distance,
+        #         theta1=theta1,
+        #         theta2=theta2,
+        #         # theta1=270,
+        #         # theta2=90 + 360,
+        #         edgecolor="blue",
+        #         alpha=0.2
+        #     )
+        #     sub_plot.add_patch(arc)
         #     sub_plot.add_patch(patch)
 
     @staticmethod
