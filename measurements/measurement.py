@@ -15,12 +15,8 @@ class Measurement:
         for self_cube in self.cubes:
             for other_cube in other.cubes:
                 if self_cube.contain(other_cube.coordinate):
-                    self_cube.q += 0.2
-                    other_cube.q += 0.2
-                    if self_cube.q >= 1.0:
-                        self_cube.q = 1.0
-                    if other_cube.q >= 1.0:
-                        other_cube.q = 1.0
+                    self_cube.q = min(self_cube.q + 0.4, 1.0)
+                    other_cube.q = min(other_cube.q + 0.4, 1.0)
 
     def __eq__(self, other):
         if not isinstance(other, Measurement):

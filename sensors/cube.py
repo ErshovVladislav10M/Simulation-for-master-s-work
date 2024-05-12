@@ -16,7 +16,7 @@ class Cube(AbstractWorldObject):
         self.q = q
         super().__init__()
 
-    def create_patch(self) -> RegularPolygon:
+    def create_xy_patch(self) -> RegularPolygon:
         return RegularPolygon(
             xy=(self.coordinate.x, self.coordinate.y),
             numVertices=4,

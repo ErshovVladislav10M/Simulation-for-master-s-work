@@ -87,22 +87,23 @@ class CityDrawer:
         plt.yticks([])
         plt.legend(loc="upper right", ncol=2, fontsize="x-large")
 
-        [uav.get_coordinate() for uav in self._uavs]
-        cubes = []
-        for camera in self._cameras:
-            for measurement in camera.get_actual_measurements(step):
-                for cube in measurement.cubes:
-                    if cube.q > 0.7:
-                        cubes.append(cube)
+        # [uav.get_coordinate() for uav in self._uavs]
+        # cubes = []
+        # for camera in self._cameras:
+        #     for measurement in camera.get_actual_measurements(step):
+        #         for cube in measurement.cubes:
+        #             if cube.q > 0.7:
+        #                 cubes.append(cube)
+        #
+        # count_detected_uav = 0
+        # for uav in self._uavs:
+        #     for cube in cubes:
+        #         if cube.contain(uav.get_coordinate(), radius=10):
+        #             count_detected_uav += 1
+        #             break
+        #
+        # print("Detected " + str(count_detected_uav) + " of " + str(len(self._uavs)))
 
-        count_detected_uav = 0
-        for uav in self._uavs:
-            for cube in cubes:
-                if cube.contain(uav.get_coordinate(), radius=10):
-                    count_detected_uav += 1
-                    break
-
-        print("Detected " + str(count_detected_uav) + " of " + str(len(self._uavs)))
         # plt.subplot(1, 2, 2)
         # plt.xlabel("Time steps")
         # plt.ylabel("Conventional units")
@@ -129,23 +130,24 @@ class CityDrawer:
         )
         plt.close()
 
-    def _draw_measurments(self, sub_plot: Axes, measurements: list[Measurement]) -> None:
+    def _draw_measurements(self, sub_plot: Axes, measurements: list[Measurement]) -> None:
         for measurement in measurements:
             if self._world.actual_step - measurement.t > 0:
                 continue
 
             for cube in measurement.cubes:
-                patch = cube.create_patch()
+                if cube.q < 0.5:
+                    continue
 
-                if cube.q > 0.5:
-                    # patch.set_alpha(1 - 0.2 * (self._world.actual_step - measurement.t))
-                    sub_plot.add_patch(patch)
+                patch = cube.create_xy_patch()
+                # patch.set_alpha(1 - 0.2 * (self._world.actual_step - measurement.t))
+                sub_plot.add_patch(patch)
 
     def _draw_cameras(self, sub_plot: Axes) -> None:
         for camera in self._cameras:
-            self._draw_measurments(sub_plot, camera.get_all_measurements())
+            self._draw_measurements(sub_plot, camera.get_all_measurements())
 
-        patches = [camera.create_patch() for camera in self._cameras]
+        patches = [camera.create_xy_patch() for camera in self._cameras]
         if len(patches) == 0:
             return
 
@@ -160,7 +162,7 @@ class CityDrawer:
         world_objects: list[AbstractWorldObject],
         label: str
     ) -> None:
-        patches = [world_object.create_patch() for world_object in world_objects]
+        patches = [world_object.create_xy_patch() for world_object in world_objects]
         if len(patches) == 0 or patches[0] is None:
             return
 

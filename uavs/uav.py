@@ -18,7 +18,7 @@ class UAV(AbstractWorldObject):
         self.step = 0
         super().__init__()
 
-    def create_patch(self) -> PathPatch | None:
+    def create_xy_patch(self) -> PathPatch | None:
         coordinate = self.get_coordinate()
         next_coordinate = self.get_next_coordinate()
 
@@ -29,13 +29,12 @@ class UAV(AbstractWorldObject):
         norm_vector = guide_vector / guide_vector.length()
         central_coordinate = coordinate + norm_vector * 10
 
-        x, y = Vector.get_vector(norm_vector.x, norm_vector.y, 0.25 * math.pi)
-        left_vector = Vector(x, y, 0)
+        left_vector = norm_vector.rotate(alpha=0.25 * math.pi, beta=0)
         left_coordinate = coordinate + left_vector * 4
 
-        x, y = Vector.get_vector(norm_vector.x, norm_vector.y, -0.25 * math.pi)
-        right_vector = Vector(x, y, 0)
+        right_vector = norm_vector.rotate(alpha=-0.25 * math.pi, beta=0)
         right_coordinate = coordinate + right_vector * 4
+
         vertices = np.array(
             [
                 (left_coordinate.x, left_coordinate.y),

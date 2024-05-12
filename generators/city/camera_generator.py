@@ -28,29 +28,23 @@ class CameraGenerator(AbstractGenerator):
         self._obsolescence_time = obsolescence_time
 
     def create(self, num_of_objects=1) -> list[Camera]:
-        vectors = [
-            vector / vector.length() * distance
-            for vector, distance in zip(
-                self._vector_distribution.get_values(num_of_objects),
-                self._distance_distribution.get_values(num_of_objects)
-            )
-        ]
-
         return [
             Camera(
                 id=id,
                 coordinate=coordinate,
                 vector=vector,
+                distance=distance,
                 alpha=self._alpha,
                 beta=self._beta,
                 cube_side=self._cube_side,
                 initial_q=self._initial_q,
                 obsolescence_time=self._obsolescence_time
             )
-            for id, coordinate, height, vector in zip(
+            for id, coordinate, height, vector, distance in zip(
                 range(num_of_objects),
                 self._coordinate_distribution.get_values(num_of_objects),
                 self._height_distribution.get_values(num_of_objects),
-                vectors
+                self._vector_distribution.get_values(num_of_objects),
+                self._distance_distribution.get_values(num_of_objects)
             )
         ]

@@ -4,7 +4,6 @@ from sensors.cameras.camera import Camera
 from uavs.uav import UAV
 from worlds.abstract_world import AbstractWorld
 from worlds.area import Area
-from worlds.coodrinate import Coordinate
 from worlds.city.building import CityBuilding
 from worlds.city.drawer import CityDrawer
 
@@ -42,8 +41,7 @@ class CityWorld(AbstractWorld, ABC):
             self.do_step()
 
             self.rec_messages()
-            for i in range(10):
-                self.send_messages()
+            self.send_messages()
 
             if self._create_step_images:
                 self._drawer.draw_plane(self._num_steps, self.actual_step)
@@ -52,9 +50,9 @@ class CityWorld(AbstractWorld, ABC):
         pass
 
     def send_messages(self) -> None:
-        for camera in self.cameras:
-            for camera1 in self.cameras:
-                camera.rec_measurements(self, camera1.send_measurements(self))
+        for i_camera in self.cameras:
+            for j_camera in self.cameras:
+                i_camera.rec_measurements(self, j_camera.send_measurements(self))
 
     def do_step(self) -> None:
         for uav in self.uavs:
@@ -65,31 +63,3 @@ class CityWorld(AbstractWorld, ABC):
 
     def get_uavs(self) -> list[UAV]:
         return self.uavs
-
-    def create_building(self, coordinate: Coordinate, height: int, side: int) -> CityBuilding:
-        build = CityBuilding(coordinate, height, side)
-        self.buildings.append(build)
-
-        return build
-
-    # def create_camera(
-    #     self,
-    #     coordinate: Coordinate,
-    #     initial_q,
-    #     obsolescence_time: int
-    # ) -> Camera:
-    #     camera = Camera(
-    #         id=len(self.cameras),
-    #         coordinate=coordinate,
-    #         initial_q=initial_q,
-    #         obsolescence_time=obsolescence_time
-    #     )
-    #     self.cameras.append(camera)
-    #
-    #     return camera
-
-    def create_uav(self, route: list[Coordinate]) -> UAV:
-        uav = UAV(route=route)
-        self.uavs.append(uav)
-
-        return uav

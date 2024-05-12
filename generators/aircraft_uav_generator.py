@@ -33,7 +33,7 @@ class AircraftUAVGenerator(AbstractGenerator):
     def _create_route(
         self,
         start_coordinate: Coordinate,
-        start_vector: Coordinate
+        start_vector: Vector
     ) -> list[Coordinate]:
         peek_alpha = Vector(start_vector.x, start_vector.y, 0).get_angle(Vector(1, 0, 0))
         peek_beta = Vector(start_vector.x, 0, start_vector.z).get_angle(Vector(1, 0, 0))
@@ -45,13 +45,11 @@ class AircraftUAVGenerator(AbstractGenerator):
             norm.rvs(loc=peek_alpha, scale=0.1, size=self._num_of_steps),
             norm.rvs(loc=peek_beta, scale=0.1, size=self._num_of_steps)
         ):
-            x, y = Vector.get_vector(vector.x, vector.y, alpha)
-            x, z = Vector.get_vector(x, vector.z, beta)
-            coordinate += Coordinate(x, y, z)
-
+            new_vector = vector.rotate(alpha, beta)
+            coordinate += new_vector
             route.append(coordinate)
 
             if not self._keep_start_vector:
-                vector = Coordinate(x, y, z)
+                vector = new_vector
 
         return route

@@ -26,11 +26,21 @@ class Coordinate:
             and np.isclose(self.z, other.z)
 
     def __add__(self, other):
-        return Coordinate(
-            self.x + other.x,
-            self.y + other.y,
-            self.z + other.z,
-        )
+        if isinstance(other, Coordinate):
+            return Coordinate(
+                self.x + other.x,
+                self.y + other.y,
+                self.z + other.z,
+            )
+
+        if isinstance(other, float):
+            return Coordinate(
+                self.x + other,
+                self.y + other,
+                self.z + other,
+            )
+
+        raise ValueError()
 
     def __sub__(self, other):
         return Coordinate(

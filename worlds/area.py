@@ -13,7 +13,7 @@ class Area(AbstractWorldObject):
         self.coordinates = coordinates
         super().__init__()
 
-    def create_patch(self) -> PathPatch:
+    def create_xy_patch(self) -> PathPatch:
         vertices = np.array(
             [
                 (coordinate.x, coordinate.y)

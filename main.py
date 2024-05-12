@@ -8,6 +8,8 @@ from generators.aircraft_uav_generator import AircraftUAVGenerator
 from generators.city.building_generator import CityBuildingGenerator
 from generators.city.camera_generator import CameraGenerator
 from generators.city.world_generator import CityWorldGenerator
+from sensors.cameras.camera import Camera
+from uavs.uav import UAV
 from worlds.area import Area
 from worlds.coodrinate import Coordinate
 from worlds.vector import Vector
@@ -22,9 +24,9 @@ def get_building_generator() -> CityBuildingGenerator:
     side_distribution = NormFloatDistribution(peek=15, scale=5)
 
     return CityBuildingGenerator(
-        coordinate_distribution,
-        height_distribution,
-        side_distribution
+        coordinate_distribution=coordinate_distribution,
+        height_distribution=height_distribution,
+        side_distribution=side_distribution
     )
 
 
@@ -38,7 +40,7 @@ def get_camera_generator() -> CameraGenerator:
         min_value=Vector(-80, -80, 0),
         max_value=Vector(80, 80, 0)
     )
-    distance_distribution = UniformFloatDistribution(min_value=49, max_value=51)
+    distance_distribution = UniformFloatDistribution(min_value=100, max_value=100)
 
     return CameraGenerator(
         coordinate_distribution=coordinate_distribution,
@@ -56,7 +58,7 @@ def get_camera_generator() -> CameraGenerator:
 def get_uav_generator(num_of_steps: int) -> AircraftUAVGenerator:
     coordinate_distribution = UniformCoordinateDistribution(
         min_value=Coordinate(-170, -170, 10),
-        max_value=Coordinate(170, 170, 150)
+        max_value=Coordinate(170, 170, 11)
     )
     vector_distribution = UniformVectorDistribution(
         min_value=Vector(-10, -10, 0),
@@ -121,5 +123,30 @@ if __name__ == "__main__":
         camera_generator=get_camera_generator(),
         uav_generator=get_uav_generator(num_of_steps)
     ).create()[0]
+
+    # camera = Camera(
+    #     id=1,
+    #     coordinate=Coordinate(10, 10, 10),
+    #     vector=Vector(10, 10, 0),
+    #     alpha=0.25 * math.pi,
+    #     beta=0.25 * math.pi,
+    #     cube_side=4,
+    #     initial_q=0.6,
+    #     obsolescence_time=1
+    # )
+    # world.cameras.append(camera)
+    #
+    # route = [
+    #     Coordinate(11, 11, 10),
+    #     Coordinate(12, 12, 10),
+    #     Coordinate(13, 13, 10),
+    #     Coordinate(14, 14, 10),
+    #     Coordinate(15, 15, 10),
+    #     Coordinate(16, 16, 10),
+    #     Coordinate(17, 17, 10),
+    #     Coordinate(18, 18, 10),
+    #     Coordinate(19, 19, 10),
+    # ]
+    # world.uavs.append(UAV(route=route))
 
     world.run()

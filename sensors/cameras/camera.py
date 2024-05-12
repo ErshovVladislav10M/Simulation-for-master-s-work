@@ -20,6 +20,7 @@ class Camera(AbstractSensor):
         id: int,
         coordinate: Coordinate,
         vector: Vector,
+        distance: float,
         alpha: float,
         beta: float,
         cube_side: float,
@@ -27,14 +28,15 @@ class Camera(AbstractSensor):
         obsolescence_time: int
     ):
         self._coordinate = coordinate
-        self._vector = vector
-        self._alpha = alpha
-        self._beta = beta
 
-        x, y = Vector.get_vector(self._vector.x, self._vector.y, 0.5 * self._alpha)
-        self._left_coordinate = self._coordinate + Coordinate(x, y, 0)
-        x, y = Vector.get_vector(self._vector.x, self._vector.y, -0.5 * self._alpha)
-        self._right_coordinate = self._coordinate + Coordinate(x, y, 0)
+        left_vector = vector.rotate(alpha=0.5 * alpha, beta=0)
+        self._left_coordinate = coordinate + left_vector / left_vector.length() * distance
+        right_vector = vector.rotate(alpha=-0.5 * alpha, beta=0)
+        self._right_coordinate = coordinate + right_vector / right_vector.length() * distance
+        up_vector = vector.rotate(alpha=0, beta=0.5 * beta)
+        self._up_coordinate = coordinate + up_vector / up_vector.length() * distance
+        down_vector = vector.rotate(alpha=0, beta=-0.5 * beta)
+        self._down_coordinate = coordinate + down_vector / down_vector.length() * distance
 
         self._cube_side = cube_side
         self._cube_diagonal = cube_side * math.sqrt(2)
@@ -42,7 +44,7 @@ class Camera(AbstractSensor):
         self._obsolescence_time = obsolescence_time
         super().__init__(id)
 
-    def create_patch(self) -> PathPatch:
+    def create_xy_patch(self) -> PathPatch:
         vertices = np.array(
             [
                 (self._left_coordinate.x, self._left_coordinate.y),
@@ -58,6 +60,28 @@ class Camera(AbstractSensor):
             edgecolor="blue",
             alpha=0.2
         )
+
+    def create_xz_patch(self) -> PathPatch:
+        vertices = np.array(
+            [
+                (self._up_coordinate.x, self._up_coordinate.z),
+                (self._coordinate.x, self._coordinate.z),
+                (self._down_coordinate.x, self._down_coordinate.z)
+            ]
+        )
+
+        return matplotlib.patches.PathPatch(Path(vertices=vertices))
+
+    def create_yz_patch(self) -> PathPatch:
+        vertices = np.array(
+            [
+                (self._up_coordinate.y, self._up_coordinate.z),
+                (self._coordinate.y, self._coordinate.z),
+                (self._down_coordinate.y, self._down_coordinate.z)
+            ]
+        )
+
+        return matplotlib.patches.PathPatch(Path(vertices=vertices))
 
     def rec_measurements(self, world: AbstractWorld, measurements: list[Measurement]) -> None:
         for measurement in measurements:
