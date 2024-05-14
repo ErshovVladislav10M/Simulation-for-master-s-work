@@ -32,6 +32,8 @@ class CityDrawer:
         self._exclude_areas = exclude_areas
 
         self._path_to_results = path_to_results
+        self._detected_uavs_counts = []
+        self._actual_uavs_counts = []
 
         self._colors = [
             "gray",
@@ -74,15 +76,16 @@ class CityDrawer:
         # sub_plot = figure.add_subplot(1, 2, 1)
         sub_plot = figure.add_subplot()
 
-        # self._draw_objects(sub_plot, self._exclude_areas, "Excluded area")
-        self._draw_objects(sub_plot, self._exclude_areas, "Исключенная область")
-        # self._draw_objects(sub_plot, self._buildings, "Buildings")
-        self._draw_objects(sub_plot, self._buildings, "Строения")
-        self._draw_cameras(sub_plot)
-        # self._draw_objects(sub_plot, self._uavs, "UAVs")
-        self._draw_objects(sub_plot, self._uavs, "БПЛА")
+        if self._world._create_step_images:
+            # self._draw_objects(sub_plot, self._exclude_areas, "Excluded area")
+            self._draw_objects(sub_plot, self._exclude_areas, "Исключенная область")
+            # self._draw_objects(sub_plot, self._buildings, "Buildings")
+            self._draw_objects(sub_plot, self._buildings, "Строения")
+            self._draw_cameras(sub_plot)
+            # self._draw_objects(sub_plot, self._uavs, "UAVs")
+            self._draw_objects(sub_plot, self._uavs, "БПЛА")
 
-        self._detect(step)
+        self._detect(num_steps, step)
 
         plt.xlabel("Step number: " + str(step), fontsize="xx-large")
         sub_plot.set(
@@ -104,14 +107,6 @@ class CityDrawer:
         # plt.plot(self.steps, self.accuracy, "r-", label="Accuracy")
         # plt.plot(self.steps, self.max_diameter, "b-", label="Diameter")
 
-        # if step == num_steps - 1:
-        #     f = open(self._path_to_results + "/accuracy.txt", "w")
-        #     f.write(str(self.accuracy))
-        #     f.close()
-        #     f = open(self._path_to_results + "/diameter.txt", "w")
-        #     f.write(str(self.diameter))
-        #     f.close()
-
         plt.savefig(
             self._path_to_results + f"/img/img_{step}.png",
             transparent=False,
@@ -120,7 +115,7 @@ class CityDrawer:
         )
         plt.close()
 
-    def _detect(self, step: int):
+    def _detect(self, num_steps: int, step: int):
         cubes = []
         for camera in self._cameras:
             for measurement in camera.get_actual_measurements(step):
@@ -137,11 +132,21 @@ class CityDrawer:
         count_detected_uav = 0
         for uav in actual_uavs:
             for cube in cubes:
-                if cube.contain(uav.get_coordinate(), radius=10):
+                if cube.contain(uav.get_coordinate(), radius=cube.diagonal):
                     count_detected_uav += 1
                     break
 
         print("Detected " + str(count_detected_uav) + " of " + str(len(actual_uavs)))
+
+        self._detected_uavs_counts.append(count_detected_uav)
+        self._actual_uavs_counts.append(len(actual_uavs))
+        if step == num_steps - 1:
+            f = open(self._path_to_results + "/detected_uavs_" + str(self._cameras[0]._cube_side) + ".txt", "w")
+            f.write(str(self._detected_uavs_counts))
+            f.close()
+            f = open(self._path_to_results + "/actual_uavs_" + str(self._cameras[0]._cube_side) + ".txt", "w")
+            f.write(str(self._actual_uavs_counts))
+            f.close()
 
     def _draw_measurements(self, sub_plot: Axes, measurements: list[Measurement]) -> None:
         for measurement in measurements:

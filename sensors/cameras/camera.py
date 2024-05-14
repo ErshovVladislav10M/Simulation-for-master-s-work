@@ -32,18 +32,22 @@ class Camera(AbstractSensor):
         self._distance = distance
 
         self._alpha_coordinates = [
+            self._get_coordinate(alpha=0, beta=0),
             self._get_coordinate(alpha=0.25 * alpha, beta=0),
             self._get_coordinate(alpha=0.5 * alpha, beta=0),
             self._coordinate,
             self._get_coordinate(alpha=-0.5 * alpha, beta=0),
             self._get_coordinate(alpha=-0.25 * alpha, beta=0),
+            self._get_coordinate(alpha=0, beta=0),
         ]
         self._beta_coordinates = [
+            self._get_coordinate(alpha=0, beta=0),
             self._get_coordinate(alpha=0, beta=0.25 * beta),
             self._get_coordinate(alpha=0, beta=0.5 * beta),
             self._coordinate,
             self._get_coordinate(alpha=0, beta=-0.5 * beta),
             self._get_coordinate(alpha=0, beta=-0.25 * beta),
+            self._get_coordinate(alpha=0, beta=0),
         ]
 
         self._cube_side = cube_side

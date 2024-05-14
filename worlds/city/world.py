@@ -40,8 +40,8 @@ class CityWorld(AbstractWorld, ABC):
             self.rec_messages()
             self.send_messages()
 
-            if self._create_step_images:
-                self._drawer.draw_plane(self._num_steps, self.actual_step)
+            # if self._create_step_images:
+            self._drawer.draw_plane(self._num_steps, self.actual_step)
 
     def rec_messages(self) -> None:
         pass

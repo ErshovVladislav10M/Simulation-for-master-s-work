@@ -15,8 +15,8 @@ from worlds.vector import Vector
 
 def get_building_generator() -> CityBuildingGenerator:
     coordinate_distribution = UniformCoordinateDistribution(
-        min_value=Coordinate(-150, -150, 0),
-        max_value=Coordinate(150, 150, 0)
+        min_value=Coordinate(-200, -200, 0),
+        max_value=Coordinate(200, 200, 0)
     )
     height_distribution = NormFloatDistribution(peek=20, scale=5)
     side_distribution = NormFloatDistribution(peek=15, scale=5)
@@ -30,15 +30,15 @@ def get_building_generator() -> CityBuildingGenerator:
 
 def get_camera_generator() -> CameraGenerator:
     coordinate_distribution = UniformCoordinateDistribution(
-        min_value=Coordinate(-150, -150, 0),
-        max_value=Coordinate(150, 150, 0)
+        min_value=Coordinate(-200, -200, 0),
+        max_value=Coordinate(200, 200, 0)
     )
     height_distribution = NormFloatDistribution(peek=20, scale=5)
     vector_distribution = UniformVectorDistribution(
-        min_value=Vector(-80, -80, 0),
-        max_value=Vector(80, 80, 0)
+        min_value=Vector(-1, -1, -0.33),
+        max_value=Vector(1, 1, 0)
     )
-    distance_distribution = UniformFloatDistribution(min_value=70, max_value=70)
+    distance_distribution = UniformFloatDistribution(min_value=100, max_value=100)
 
     return CameraGenerator(
         coordinate_distribution=coordinate_distribution,
@@ -47,7 +47,7 @@ def get_camera_generator() -> CameraGenerator:
         distance_distribution=distance_distribution,
         alpha=2 * math.pi / 3,
         beta=math.pi / 2,
-        cube_side=4,
+        cube_side=15,
         initial_q=0.2,
         obsolescence_time=1
     )
@@ -55,8 +55,8 @@ def get_camera_generator() -> CameraGenerator:
 
 def get_uav_generator(num_of_steps: int) -> AircraftUAVGenerator:
     coordinate_distribution = UniformCoordinateDistribution(
-        min_value=Coordinate(-170, -170, 10),
-        max_value=Coordinate(170, 170, 10)
+        min_value=Coordinate(-170, -170, 15),
+        max_value=Coordinate(170, 170, 15)
     )
     vector_distribution = UniformVectorDistribution(
         min_value=Vector(-10, -10, 0),
@@ -114,7 +114,7 @@ if __name__ == "__main__":
     world = CityWorldGenerator(
         num_of_steps=num_of_steps,
         world_size=200,
-        create_step_images=True,
+        create_step_images=False,
         exclude_areas=get_exclude_areas(),
         building_generator=get_building_generator(),
         camera_generator=get_camera_generator(),

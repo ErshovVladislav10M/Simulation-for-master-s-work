@@ -27,16 +27,21 @@ class Cube(AbstractWorldObject):
             facecolor="white",
         )
 
-    def contain(self, coordinate: Coordinate, radius: float = 0) -> bool:
-        if coordinate is None:
-            return False
-
-        # if self.coordinate.z + 0.5 * self.side < coordinate.z:
-        #     return False
-        # if self.coordinate.z - 0.5 * self.side > coordinate.z:
-        #     return False
-
-        return super().contain(coordinate, radius)
+    # def create_xz_patch(self) -> RegularPolygon:
+    #     return RegularPolygon(
+    #         xy=(self.coordinate.x, self.coordinate.y),
+    #         numVertices=4,
+    #         orientation=0.25 * math.pi,
+    #         radius=self.diagonal / 2,
+    #     )
+    #
+    # def create_yz_patch(self) -> RegularPolygon:
+    #     return RegularPolygon(
+    #         xy=(self.coordinate.x, self.coordinate.y),
+    #         numVertices=4,
+    #         orientation=0.25 * math.pi,
+    #         radius=self.diagonal / 2,
+    #     )
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Cube):
