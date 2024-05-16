@@ -15,13 +15,15 @@ class AircraftUAVGenerator(AbstractGenerator):
         start_vector_distribution: AbstractDistribution,
         speed_distribution: AbstractDistribution,
         keep_start_vector: bool,
-        num_of_steps: int
+        num_of_steps: int,
+        world_size: float
     ):
         self._start_coordinate_distribution = start_coordinate_distribution
         self._start_vector_distribution = start_vector_distribution
         self._speed_distribution = speed_distribution
         self._keep_start_vector = keep_start_vector
         self._num_of_steps = num_of_steps
+        self._world_size = world_size
 
     def create(self, num_of_objects=1) -> list[UAV]:
         return [
@@ -51,6 +53,16 @@ class AircraftUAVGenerator(AbstractGenerator):
         ):
             new_vector = vector.rotate(alpha, beta)
             coordinate += new_vector / new_vector.length() * speed
+
+            if coordinate.x > self._world_size:
+                coordinate.x -= 2 * self._world_size
+            if coordinate.x < -self._world_size:
+                coordinate.x += 2 * self._world_size
+            if coordinate.y > self._world_size:
+                coordinate.y -= 2 * self._world_size
+            if coordinate.y < -self._world_size:
+                coordinate.y += 2 * self._world_size
+
             route.append(coordinate)
 
             if not self._keep_start_vector:

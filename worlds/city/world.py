@@ -15,7 +15,8 @@ class CityWorld(AbstractWorld, ABC):
         num_steps: int,
         size: float,
         create_step_images: bool,
-        exclude_areas: list[Area]
+        exclude_areas: list[Area],
+        simulation_data
     ):
         super().__init__(num_steps, size, create_step_images)
         self.buildings: list[CityBuilding] = []
@@ -27,7 +28,8 @@ class CityWorld(AbstractWorld, ABC):
             self.buildings,
             self.cameras,
             self.uavs,
-            self._exclude_areas
+            self._exclude_areas,
+            "results/" + simulation_data["name"]
         )
 
     def run(self) -> None:

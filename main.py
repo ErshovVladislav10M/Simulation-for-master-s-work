@@ -13,7 +13,9 @@ from worlds.coodrinate import Coordinate
 from worlds.vector import Vector
 
 
-def get_building_generator(world_size: float) -> CityBuildingGenerator:
+def get_building_generator(simulation_data) -> CityBuildingGenerator:
+    world_size = simulation_data["world_size"]
+
     coordinate_distribution = UniformCoordinateDistribution(
         min_value=Coordinate(-world_size, -world_size, 0),
         max_value=Coordinate(world_size, world_size, 0)
@@ -28,19 +30,23 @@ def get_building_generator(world_size: float) -> CityBuildingGenerator:
     )
 
 
-def get_camera_generator(world_size: float, distance: float) -> CameraGenerator:
-    with open("configurations/cameras/safe_city_camera.json", "r") as file:
-        data = json.load(file)
+def get_camera_generator(simulation_data) -> CameraGenerator:
+    with open(simulation_data["sensor"], "r") as file:
+        sensor_data = json.load(file)
+    with open(simulation_data["uav"], "r") as file:
+        uav_data = json.load(file)
 
+    world_size = simulation_data["world_size"]
     coordinate_distribution = UniformCoordinateDistribution(
         min_value=Coordinate(-world_size, -world_size, 0),
         max_value=Coordinate(world_size, world_size, 0)
     )
-    height_distribution = NormFloatDistribution(peek=data["peek_height"], scale=data["scale_height"])
+    height_distribution = NormFloatDistribution(peek=sensor_data["peek_height"], scale=sensor_data["scale_height"])
     vector_distribution = UniformVectorDistribution(
         min_value=Vector(-1, -1, -0.33),
         max_value=Vector(1, 1, 0)
     )
+    distance = uav_data["detection_distance"]
     distance_distribution = UniformFloatDistribution(min_value=distance, max_value=distance)
 
     return CameraGenerator(
@@ -48,15 +54,19 @@ def get_camera_generator(world_size: float, distance: float) -> CameraGenerator:
         height_distribution=height_distribution,
         vector_distribution=vector_distribution,
         distance_distribution=distance_distribution,
-        alpha=data["alpha"],
-        beta=data["beta"],
+        alpha=sensor_data["alpha"],
+        beta=sensor_data["beta"],
         cube_side=10,
         initial_q=0.2,
         obsolescence_time=1
     )
 
 
-def get_uav_generator(world_size: float, initial_height: float, num_of_steps: int) -> AircraftUAVGenerator:
+def get_uav_generator(simulation_data) -> AircraftUAVGenerator:
+    world_size = simulation_data["world_size"]
+    num_of_steps = simulation_data["num_of_steps"]
+    initial_height = simulation_data["uav_initial_height"]
+
     coordinate_distribution = UniformCoordinateDistribution(
         min_value=Coordinate(-world_size, -world_size, initial_height),
         max_value=Coordinate(world_size, world_size, initial_height)
@@ -66,9 +76,9 @@ def get_uav_generator(world_size: float, initial_height: float, num_of_steps: in
         max_value=Vector(1, 1, 0)
     )
 
-    with open("configurations/uavs/cavok.json", "r") as file:
-        data = json.load(file)
-    speed = data["speed"]
+    with open(simulation_data["uav"], "r") as file:
+        uav_data = json.load(file)
+    speed = uav_data["speed"]
     speed_distribution = UniformFloatDistribution(min_value=speed, max_value=speed)
 
     return AircraftUAVGenerator(
@@ -76,7 +86,8 @@ def get_uav_generator(world_size: float, initial_height: float, num_of_steps: in
         start_vector_distribution=vector_distribution,
         speed_distribution=speed_distribution,
         keep_start_vector=True,
-        num_of_steps=num_of_steps
+        num_of_steps=num_of_steps,
+        world_size=world_size
     )
 
 
@@ -117,19 +128,22 @@ def get_exclude_areas() -> list[Area]:
     ]
 
 
-if __name__ == "__main__":
-    num_of_steps = 40
-    world_size = 2000
+def main():
+    with open("configurations/simulations/simulation_2.json", "r") as file:
+        simulation_data = json.load(file)
 
     world = CityWorldGenerator(
-        num_of_steps=num_of_steps,
-        world_size=world_size,
+        simulation_data=simulation_data,
         create_step_images=False,
         # exclude_areas=get_exclude_areas(),
         exclude_areas=[],
-        building_generator=get_building_generator(world_size),
-        camera_generator=get_camera_generator(world_size=world_size, distance=150),
-        uav_generator=get_uav_generator(world_size=world_size, initial_height=10, num_of_steps=num_of_steps)
+        building_generator=get_building_generator(simulation_data),
+        camera_generator=get_camera_generator(simulation_data),
+        uav_generator=get_uav_generator(simulation_data)
     ).create()[0]
 
     world.run()
+
+
+if __name__ == "__main__":
+    main()

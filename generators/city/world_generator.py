@@ -12,16 +12,14 @@ class CityWorldGenerator(AbstractGenerator):
 
     def __init__(
         self,
-        num_of_steps: int,
-        world_size: float,
+        simulation_data,
         create_step_images: bool,
         exclude_areas: list[Area],
         building_generator: CityBuildingGenerator,
         camera_generator: CameraGenerator,
         uav_generator: AircraftUAVGenerator
     ):
-        self._num_of_steps = num_of_steps
-        self._world_size = world_size
+        self._simulation_data = simulation_data
         self._create_step_images = create_step_images
         self._exclude_areas = exclude_areas
         self._building_generator = building_generator
@@ -30,13 +28,14 @@ class CityWorldGenerator(AbstractGenerator):
 
     def create(self, num_of_objects=1) -> list[CityWorld]:
         world = CityWorld(
-            self._num_of_steps,
-            self._world_size,
+            self._simulation_data["num_of_steps"],
+            self._simulation_data["world_size"],
             self._create_step_images,
-            self._exclude_areas
+            self._exclude_areas,
+            self._simulation_data
         )
 
-        for building in self._building_generator.create(3000):
+        for building in self._building_generator.create(self._simulation_data["num_of_buildings"]):
             if self._check_on_contains(building.coordinate, building.side, self._exclude_areas):
                 continue
 
@@ -45,10 +44,10 @@ class CityWorldGenerator(AbstractGenerator):
 
             world.buildings.append(building)
 
-        for camera in self._camera_generator.create(5 * len(world.buildings)):
+        for camera in self._camera_generator.create(self._simulation_data["num_of_sensors"]):
             world.cameras.append(camera)
 
-        for uav in self._uav_generator.create(250):
+        for uav in self._uav_generator.create(self._simulation_data["num_of_uavs"]):
             world.uavs.append(uav)
 
         return [world]

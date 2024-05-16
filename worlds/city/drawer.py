@@ -107,12 +107,13 @@ class CityDrawer:
         # plt.plot(self.steps, self.accuracy, "r-", label="Accuracy")
         # plt.plot(self.steps, self.max_diameter, "b-", label="Diameter")
 
-        plt.savefig(
-            self._path_to_results + f"/img/img_{step}.png",
-            transparent=False,
-            facecolor="white",
-            dpi=300
-        )
+        if self._world._create_step_images:
+            plt.savefig(
+                self._path_to_results + f"/img/img_{step}.png",
+                transparent=False,
+                facecolor="white",
+                dpi=300
+            )
         plt.close()
 
     def _detect(self, num_steps: int, step: int):

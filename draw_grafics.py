@@ -4,11 +4,11 @@ import numpy as np
 import re
 
 
-def get_percents(cube_side: int):
-    with open("results/actual_uavs_" + str(cube_side) + ".txt", "r") as file:
+def get_percents(sim_name: str, cube_side: int):
+    with open("results/" + sim_name + "/actual_uavs_" + str(cube_side) + ".txt", "r") as file:
         actual_uavs_counts = [int(count) for count in list(re.split("[\[,\]]", file.readline())) if count != ""]
 
-    with open("results/detected_uavs_" + str(cube_side) + ".txt", "r") as file:
+    with open("results/" + sim_name + "/detected_uavs_" + str(cube_side) + ".txt", "r") as file:
         detected_uavs_counts = [int(count) for count in list(re.split("[\[,\]]", file.readline())) if count != ""]
 
     return [
@@ -18,15 +18,16 @@ def get_percents(cube_side: int):
 
 
 def draw():
-    percents_cube_side_5 = get_percents(5)
-    percents_cube_side_10 = get_percents(10)
-    percents_cube_side_15 = get_percents(15)
+    sim_name = "cavok_h15"
+    # percents_cube_side_5 = get_percents(5)
+    # percents_cube_side_10 = get_percents(sim_name, 10)
+    percents_cube_side_15 = get_percents(sim_name, 15)
 
     figure = plt.figure(figsize=(5, 5))
 
     plt.xlabel("Шаги")
     plt.ylabel("Процент обнаруженных БПЛА")
-    plt.xlim(-2, len(percents_cube_side_5) + 2)
+    plt.xlim(-2, len(percents_cube_side_15) + 2)
     plt.ylim(-2, 102)
     plt.title("Эффективность обнаружения БПЛА")
 
@@ -38,8 +39,8 @@ def draw():
     # spl = make_interp_spline([i for i in range(0, 70)], diameter3, k=5)
     # diameter3_smooth = spl(time_steps_smooth)
 
-    plt.plot([i for i in range(len(percents_cube_side_5))], percents_cube_side_5, "r-", label="Сторона куба 5")
-    plt.plot([i for i in range(len(percents_cube_side_10))], percents_cube_side_10, "g-", label="Сторона куба 10")
+    # plt.plot([i for i in range(len(percents_cube_side_5))], percents_cube_side_5, "r-", label="Сторона куба 5")
+    # plt.plot([i for i in range(len(percents_cube_side_10))], percents_cube_side_10, "g-", label="Сторона куба 10")
     plt.plot([i for i in range(len(percents_cube_side_15))], percents_cube_side_15, "b-", label="Сторона куба 15")
     plt.legend(loc="upper right")
 
@@ -64,7 +65,7 @@ def draw():
     # sub_plot.legend(loc="best")
 
     # plt.show()
-    plt.savefig("./results/grade.png", transparent=False, facecolor="white", dpi=170)
+    plt.savefig("./results/" + sim_name + "/grade.png", transparent=False, facecolor="white", dpi=170)
 
 
 if __name__ == "__main__":
