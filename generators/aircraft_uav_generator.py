@@ -13,27 +13,31 @@ class AircraftUAVGenerator(AbstractGenerator):
         self,
         start_coordinate_distribution: AbstractDistribution,
         start_vector_distribution: AbstractDistribution,
+        speed_distribution: AbstractDistribution,
         keep_start_vector: bool,
         num_of_steps: int
     ):
         self._start_coordinate_distribution = start_coordinate_distribution
         self._start_vector_distribution = start_vector_distribution
+        self._speed_distribution = speed_distribution
         self._keep_start_vector = keep_start_vector
         self._num_of_steps = num_of_steps
 
     def create(self, num_of_objects=1) -> list[UAV]:
         return [
-            UAV(self._create_route(start_coordinate, start_vector))
-            for start_coordinate, start_vector in zip(
+            UAV(self._create_route(start_coordinate, start_vector, speed))
+            for start_coordinate, start_vector, speed in zip(
                 self._start_coordinate_distribution.get_values(num_of_objects),
-                self._start_vector_distribution.get_values(num_of_objects)
+                self._start_vector_distribution.get_values(num_of_objects),
+                self._speed_distribution.get_values(num_of_objects)
             )
         ]
 
     def _create_route(
         self,
         start_coordinate: Coordinate,
-        start_vector: Vector
+        start_vector: Vector,
+        speed: float
     ) -> list[Coordinate]:
         peek_alpha = Vector(start_vector.x, start_vector.y, 0).get_angle(Vector(1, 0, 0))
         peek_beta = Vector(start_vector.x, 0, start_vector.z).get_angle(Vector(1, 0, 0))
@@ -46,7 +50,7 @@ class AircraftUAVGenerator(AbstractGenerator):
             norm.rvs(loc=peek_beta, scale=0.1, size=self._num_of_steps)
         ):
             new_vector = vector.rotate(alpha, beta)
-            coordinate += new_vector
+            coordinate += new_vector / new_vector.length() * speed
             route.append(coordinate)
 
             if not self._keep_start_vector:

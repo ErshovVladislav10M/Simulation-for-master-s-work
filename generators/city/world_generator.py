@@ -36,7 +36,7 @@ class CityWorldGenerator(AbstractGenerator):
             self._exclude_areas
         )
 
-        for building in self._building_generator.create(50):
+        for building in self._building_generator.create(3000):
             if self._check_on_contains(building.coordinate, building.side, self._exclude_areas):
                 continue
 
@@ -48,7 +48,7 @@ class CityWorldGenerator(AbstractGenerator):
         for camera in self._camera_generator.create(5 * len(world.buildings)):
             world.cameras.append(camera)
 
-        for uav in self._uav_generator.create(25):
+        for uav in self._uav_generator.create(250):
             world.uavs.append(uav)
 
         return [world]

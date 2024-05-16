@@ -49,7 +49,8 @@ class CityWorld(AbstractWorld, ABC):
     def send_messages(self) -> None:
         for i_camera in self.cameras:
             for j_camera in self.cameras:
-                i_camera.rec_measurements(self, j_camera.send_measurements(self))
+                if i_camera.coordinate.distance(j_camera.coordinate) < i_camera.distance * 2:
+                    i_camera.rec_measurements(self, j_camera.send_measurements(self))
 
     def do_step(self) -> None:
         for uav in self.uavs:

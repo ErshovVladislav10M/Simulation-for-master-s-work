@@ -27,15 +27,15 @@ class Camera(AbstractSensor):
         initial_q: float,
         obsolescence_time: int
     ):
-        self._coordinate = coordinate
-        self._vector = vector
-        self._distance = distance
+        self.coordinate = coordinate
+        self.vector = vector
+        self.distance = distance
 
         self._alpha_coordinates = [
             self._get_coordinate(alpha=0, beta=0),
             self._get_coordinate(alpha=0.25 * alpha, beta=0),
             self._get_coordinate(alpha=0.5 * alpha, beta=0),
-            self._coordinate,
+            self.coordinate,
             self._get_coordinate(alpha=-0.5 * alpha, beta=0),
             self._get_coordinate(alpha=-0.25 * alpha, beta=0),
             self._get_coordinate(alpha=0, beta=0),
@@ -44,7 +44,7 @@ class Camera(AbstractSensor):
             self._get_coordinate(alpha=0, beta=0),
             self._get_coordinate(alpha=0, beta=0.25 * beta),
             self._get_coordinate(alpha=0, beta=0.5 * beta),
-            self._coordinate,
+            self.coordinate,
             self._get_coordinate(alpha=0, beta=-0.5 * beta),
             self._get_coordinate(alpha=0, beta=-0.25 * beta),
             self._get_coordinate(alpha=0, beta=0),
@@ -57,8 +57,8 @@ class Camera(AbstractSensor):
         super().__init__(id)
 
     def _get_coordinate(self, alpha: float, beta: float) -> Coordinate:
-        rotated = self._vector.rotate(alpha, beta)
-        return self._coordinate + rotated / rotated.length() * self._distance
+        rotated = self.vector.rotate(alpha, beta)
+        return self.coordinate + rotated / rotated.length() * self.distance
 
     def create_xy_patch(self) -> PathPatch:
         vertices = np.array([(coordinate.x, coordinate.y) for coordinate in self._alpha_coordinates])
@@ -99,12 +99,12 @@ class Camera(AbstractSensor):
             self._measurements.append(measurement)
 
     def _get_cubes(self, coordinate: Coordinate) -> list[(Cube, float)]:
-        vector = Vector.of(coordinate - self._coordinate)
+        vector = Vector.of(coordinate - self.coordinate)
         vector_delta = (vector / vector.length()) * self._cube_diagonal
 
-        coordinate = Coordinate(self._coordinate.x, self._coordinate.y, self._coordinate.z)
+        coordinate = Coordinate(self.coordinate.x, self.coordinate.y, self.coordinate.z)
         cubes = []
-        for _ in range(int(self._distance / self._cube_diagonal)):
+        for _ in range(int(self.distance / self._cube_diagonal)):
             cubes.append(Cube(coordinate, self._cube_side, self._initial_q))
             coordinate += vector_delta
 

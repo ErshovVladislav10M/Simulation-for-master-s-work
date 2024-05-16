@@ -126,7 +126,8 @@ class CityDrawer:
         actual_uavs = [
             uav
             for uav in self._uavs
-            if -200 < uav.get_coordinate().x < 200 and -200 < uav.get_coordinate().y < 200
+            if -self._world.size < uav.get_coordinate().x < self._world.size
+               and -self._world.size < uav.get_coordinate().y < self._world.size
         ]
 
         count_detected_uav = 0
@@ -136,6 +137,8 @@ class CityDrawer:
                     count_detected_uav += 1
                     break
 
+        print("Buildings " + str(len(self._buildings)))
+        print("Cameras " + str(len(self._cameras)))
         print("Detected " + str(count_detected_uav) + " of " + str(len(actual_uavs)))
 
         self._detected_uavs_counts.append(count_detected_uav)
