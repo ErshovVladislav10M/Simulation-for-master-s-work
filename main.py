@@ -30,7 +30,7 @@ def get_building_generator(simulation_data) -> CityBuildingGenerator:
     )
 
 
-def get_camera_generator(simulation_data) -> CameraGenerator:
+def get_camera_generator(simulation_data, cube_side: float) -> CameraGenerator:
     with open(simulation_data["sensor"], "r") as file:
         sensor_data = json.load(file)
     with open(simulation_data["uav"], "r") as file:
@@ -56,7 +56,7 @@ def get_camera_generator(simulation_data) -> CameraGenerator:
         distance_distribution=distance_distribution,
         alpha=sensor_data["alpha"],
         beta=sensor_data["beta"],
-        cube_side=10,
+        cube_side=cube_side,
         initial_q=0.2,
         obsolescence_time=1
     )
@@ -128,8 +128,8 @@ def get_exclude_areas() -> list[Area]:
     ]
 
 
-def main():
-    with open("configurations/simulations/simulation_2.json", "r") as file:
+def main(cube_side: float):
+    with open("configurations/simulations/geran2_h20.json", "r") as file:
         simulation_data = json.load(file)
 
     world = CityWorldGenerator(
@@ -138,7 +138,7 @@ def main():
         # exclude_areas=get_exclude_areas(),
         exclude_areas=[],
         building_generator=get_building_generator(simulation_data),
-        camera_generator=get_camera_generator(simulation_data),
+        camera_generator=get_camera_generator(simulation_data, cube_side),
         uav_generator=get_uav_generator(simulation_data)
     ).create()[0]
 
@@ -146,4 +146,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    for cube_side in [10, 15]:
+        main(cube_side)

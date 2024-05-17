@@ -18,9 +18,9 @@ def get_percents(sim_name: str, cube_side: int):
 
 
 def draw():
-    sim_name = "cavok_h15"
+    sim_name = "geran2_h10"
     # percents_cube_side_5 = get_percents(5)
-    # percents_cube_side_10 = get_percents(sim_name, 10)
+    percents_cube_side_10 = get_percents(sim_name, 10)
     percents_cube_side_15 = get_percents(sim_name, 15)
 
     figure = plt.figure(figsize=(5, 5))
@@ -40,7 +40,7 @@ def draw():
     # diameter3_smooth = spl(time_steps_smooth)
 
     # plt.plot([i for i in range(len(percents_cube_side_5))], percents_cube_side_5, "r-", label="Сторона куба 5")
-    # plt.plot([i for i in range(len(percents_cube_side_10))], percents_cube_side_10, "g-", label="Сторона куба 10")
+    plt.plot([i for i in range(len(percents_cube_side_10))], percents_cube_side_10, "g-", label="Сторона куба 10")
     plt.plot([i for i in range(len(percents_cube_side_15))], percents_cube_side_15, "b-", label="Сторона куба 15")
     plt.legend(loc="upper right")
 
