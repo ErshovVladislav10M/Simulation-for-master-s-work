@@ -6,6 +6,7 @@ from worlds.abstract_world import AbstractWorld
 from worlds.area import Area
 from worlds.city.building import CityBuilding
 from worlds.city.drawer import CityDrawer
+from worlds.city.listener import CityListener
 
 
 class CityWorld(AbstractWorld, ABC):
@@ -23,6 +24,13 @@ class CityWorld(AbstractWorld, ABC):
         self.cameras: list[Camera] = []
         self.uavs: list[UAV] = []
         self._exclude_areas = exclude_areas
+        self._listener = CityListener(
+            self,
+            self.buildings,
+            self.cameras,
+            self.uavs,
+            "results/" + simulation_data["name"]
+        )
         self._drawer = CityDrawer(
             self,
             self.buildings,
@@ -42,8 +50,9 @@ class CityWorld(AbstractWorld, ABC):
             self.rec_messages()
             self.send_messages()
 
-            # if self._create_step_images:
-            self._drawer.draw_plane(self._num_steps, self.actual_step)
+            self._listener.detect(self._num_steps, self.actual_step)
+            if self._create_step_images:
+                self._drawer.draw_plane(self.actual_step)
 
     def rec_messages(self) -> None:
         pass

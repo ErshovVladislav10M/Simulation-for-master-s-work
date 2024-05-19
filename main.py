@@ -129,12 +129,12 @@ def get_exclude_areas() -> list[Area]:
 
 
 def main(cube_side: float):
-    with open("configurations/simulations/geran2_h20.json", "r") as file:
+    with open("configurations/simulations/for_presentation.json", "r") as file:
         simulation_data = json.load(file)
 
     world = CityWorldGenerator(
         simulation_data=simulation_data,
-        create_step_images=False,
+        create_step_images=simulation_data["create_step_images"],
         # exclude_areas=get_exclude_areas(),
         exclude_areas=[],
         building_generator=get_building_generator(simulation_data),
@@ -148,3 +148,4 @@ def main(cube_side: float):
 if __name__ == "__main__":
     for cube_side in [10, 15]:
         main(cube_side)
+    # main(5)

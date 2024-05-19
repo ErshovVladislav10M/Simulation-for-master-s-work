@@ -2,6 +2,7 @@
     "name": "cavok_h15",
     "world_size": 500,
     "num_of_steps": 40,
+    "create_step_images": false,
     "num_of_buildings": 500,
     "sensor": "configurations/sensors/safe_city_camera.json",
     "num_of_sensors": 2500,

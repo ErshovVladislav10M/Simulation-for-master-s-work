@@ -33,24 +33,32 @@ class Camera(AbstractSensor):
 
         self._alpha_coordinates = [
             self._get_coordinate(alpha=0, beta=0),
+            self._get_coordinate(alpha=0.125, beta=0),
             self._get_coordinate(alpha=0.25 * alpha, beta=0),
+            self._get_coordinate(alpha=0.375 * alpha, beta=0),
             self._get_coordinate(alpha=0.5 * alpha, beta=0),
             self.coordinate,
             self._get_coordinate(alpha=-0.5 * alpha, beta=0),
+            self._get_coordinate(alpha=-0.375 * alpha, beta=0),
             self._get_coordinate(alpha=-0.25 * alpha, beta=0),
+            self._get_coordinate(alpha=-0.125 * alpha, beta=0),
             self._get_coordinate(alpha=0, beta=0),
         ]
         self._beta_coordinates = [
             self._get_coordinate(alpha=0, beta=0),
+            self._get_coordinate(alpha=0, beta=0.125 * beta),
             self._get_coordinate(alpha=0, beta=0.25 * beta),
+            self._get_coordinate(alpha=0, beta=0.375 * beta),
             self._get_coordinate(alpha=0, beta=0.5 * beta),
             self.coordinate,
             self._get_coordinate(alpha=0, beta=-0.5 * beta),
+            self._get_coordinate(alpha=0, beta=-0.375 * beta),
             self._get_coordinate(alpha=0, beta=-0.25 * beta),
+            self._get_coordinate(alpha=0, beta=-0.125 * beta),
             self._get_coordinate(alpha=0, beta=0),
         ]
 
-        self._cube_side = cube_side
+        self.cube_side = cube_side
         self._cube_diagonal = cube_side * math.sqrt(2)
         self._initial_q = initial_q
         self._obsolescence_time = obsolescence_time
@@ -105,7 +113,7 @@ class Camera(AbstractSensor):
         coordinate = Coordinate(self.coordinate.x, self.coordinate.y, self.coordinate.z)
         cubes = []
         for _ in range(int(self.distance / self._cube_diagonal)):
-            cubes.append(Cube(coordinate, self._cube_side, self._initial_q))
+            cubes.append(Cube(coordinate, self.cube_side, self._initial_q))
             coordinate += vector_delta
 
         return cubes

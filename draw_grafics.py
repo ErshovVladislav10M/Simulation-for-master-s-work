@@ -1,71 +1,56 @@
-import matplotlib.pyplot as plt
-from scipy.interpolate import make_interp_spline
-import numpy as np
+import os
 import re
 
+import matplotlib.pyplot as plt
 
-def get_percents(sim_name: str, cube_side: int):
-    with open("results/" + sim_name + "/actual_uavs_" + str(cube_side) + ".txt", "r") as file:
+
+def get_percent(uav: str, h: int, cube_side: int) -> float:
+    actual_uav_file = "results/" + uav + "_h" + str(h) + "/actual_uavs_" + str(cube_side) + ".txt"
+    if not os.path.isfile(actual_uav_file):
+        return -1
+    with open(actual_uav_file, "r") as file:
         actual_uavs_counts = [int(count) for count in list(re.split("[\[,\]]", file.readline())) if count != ""]
 
-    with open("results/" + sim_name + "/detected_uavs_" + str(cube_side) + ".txt", "r") as file:
+    detected_uav_file = "results/" + uav + "_h" + str(h) + "/detected_uavs_" + str(cube_side) + ".txt"
+    if not os.path.isfile(detected_uav_file):
+        return -1
+    with open(detected_uav_file, "r") as file:
         detected_uavs_counts = [int(count) for count in list(re.split("[\[,\]]", file.readline())) if count != ""]
 
-    return [
-        100 * float(detected_uavs_count) / actual_uavs_count
-        for actual_uavs_count, detected_uavs_count in zip(actual_uavs_counts, detected_uavs_counts)
-    ]
+    return 100.0 * sum(detected_uavs_counts) / sum(actual_uavs_counts)
 
 
-def draw():
-    sim_name = "geran2_h10"
-    # percents_cube_side_5 = get_percents(5)
-    percents_cube_side_10 = get_percents(sim_name, 10)
-    percents_cube_side_15 = get_percents(sim_name, 15)
-
-    figure = plt.figure(figsize=(5, 5))
-
-    plt.xlabel("Шаги")
+def draw(cube_side: int):
+    plt.xlabel("Высота полета (м)")
     plt.ylabel("Процент обнаруженных БПЛА")
-    plt.xlim(-2, len(percents_cube_side_15) + 2)
+    plt.xlim(0, 50)
     plt.ylim(-2, 102)
     plt.title("Эффективность обнаружения БПЛА")
 
-    # time_steps_smooth = np.linspace(0, 69, 200)
-    # spl = make_interp_spline([i for i in range(0, 70)], diameter1, k=5)
-    # diameter1_smooth = spl(time_steps_smooth)
-    # spl = make_interp_spline([i for i in range(0, 70)], diameter2, k=5)
-    # diameter2_smooth = spl(time_steps_smooth)
-    # spl = make_interp_spline([i for i in range(0, 70)], diameter3, k=5)
-    # diameter3_smooth = spl(time_steps_smooth)
+    uav_names = {"cavok": "Cavok 23 VH", "geran2": "Герань-2", "matrice600": "DJI Matrice 600 Pro", "mavic3": "DJI Mavic 3 Enterprise"}
+    uav_colors = {"cavok": "k", "geran2": "r", "matrice600": "b", "mavic3": "m"}
 
-    # plt.plot([i for i in range(len(percents_cube_side_5))], percents_cube_side_5, "r-", label="Сторона куба 5")
-    plt.plot([i for i in range(len(percents_cube_side_10))], percents_cube_side_10, "g-", label="Сторона куба 10")
-    plt.plot([i for i in range(len(percents_cube_side_15))], percents_cube_side_15, "b-", label="Сторона куба 15")
+    for uav in ["geran2", "cavok", "matrice600", "mavic3"]:
+        heights = []
+        percents = []
+        for h in [5, 10, 15, 20, 25, 30, 35, 40, 45]:
+            percent = get_percent(uav, h, cube_side)
+            if percent < 0:
+                continue
+
+            heights.append(h)
+            percents.append(percent)
+
+        plt.plot(heights, percents, uav_colors[uav] + "-", label=uav_names[uav])
+
     plt.legend(loc="upper right")
 
     # sub_plot = figure.add_subplot(1, 2, 2)
-    # plt.xlabel("Time steps")
-    # plt.ylabel("Accuracy")
-    # plt.xlim(-2, 72)
-    # plt.ylim(-2, max(accuracy1) + 5)
-    # # plt.title("Accuracy for 10 agents on 24*24 plane")
-    #
-    # time_steps_smooth = np.linspace(0, 69, 200)
-    # spl = make_interp_spline([i for i in range(0, 70)], accuracy1, k=5)
-    # accuracy1_smooth = spl(time_steps_smooth)
-    # spl = make_interp_spline([i for i in range(0, 70)], accuracy2, k=5)
-    # accuracy2_smooth = spl(time_steps_smooth)
-    # spl = make_interp_spline([i for i in range(0, 70)], accuracy3, k=5)
-    # accuracy3_smooth = spl(time_steps_smooth)
-    #
-    # sub_plot.plot([i for i in range(0, 70)], accuracy1, "r-", label="Micro-control")
-    # sub_plot.plot([i for i in range(0, 70)], accuracy2, "g-", label="Macro-control")
-    # sub_plot.plot([i for i in range(0, 70)], accuracy3, "b-", label="Meso-control")
     # sub_plot.legend(loc="best")
 
     # plt.show()
-    plt.savefig("./results/" + sim_name + "/grade.png", transparent=False, facecolor="white", dpi=170)
+    plt.savefig("./results/grade_cube_side" + str(cube_side) + ".png", transparent=False, facecolor="white", dpi=170)
+    plt.close()
 
 
 if __name__ == "__main__":
@@ -78,4 +63,5 @@ if __name__ == "__main__":
     # sub_plot = figure.add_subplot(1, 3, 3)
     # draw(15, sub_plot)
 
-    draw()
+    for side in [10, 15]:
+        draw(side)
