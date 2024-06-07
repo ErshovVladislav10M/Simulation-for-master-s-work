@@ -49,7 +49,7 @@ def draw(cube_side: int):
     # sub_plot.legend(loc="best")
 
     # plt.show()
-    plt.savefig("./results/grade_cube_side" + str(cube_side) + ".png", transparent=False, facecolor="white", dpi=170)
+    plt.savefig("./results/grade_cube_side" + str(cube_side) + ".jpg", transparent=False, facecolor="white", dpi=170)
     plt.close()
 
 

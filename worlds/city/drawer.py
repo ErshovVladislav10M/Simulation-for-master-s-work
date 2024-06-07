@@ -31,9 +31,11 @@ class CityDrawer:
 
     def draw_plane(self, step: int):
         figure = plt.figure(figsize=(5, 5))
+        # figure = plt.figure(figsize=(8, 8))
 
         # sub_plot = figure.add_subplot(1, 2, 1)
-        # figure.subplots_adjust(left=0.01, bottom=0.005, top=0.99, right=0.99)
+        # figure.subplots_adjust(left=0.05, bottom=0.05, top=0.95, right=0.95)
+        figure.subplots_adjust(left=0.01, bottom=0.005, top=0.99, right=0.99)
         sub_plot = figure.add_subplot()
 
         # self._draw_objects(sub_plot, self._exclude_areas, "Excluded area")
@@ -45,7 +47,7 @@ class CityDrawer:
         self._draw_objects(sub_plot, self._uavs, "БПЛА")
 
         # plt.xlabel("Step number: " + str(step), fontsize="xx-large")
-        plt.xlabel("Шаг: " + str(step), fontsize="xx-large")
+        # plt.xlabel("Шаг: " + str(step), fontsize="xx-large")
 
         sub_plot.set(
             xlim=(-self._world.size, self._world.size),
@@ -82,14 +84,14 @@ class CityDrawer:
         for camera in self._cameras:
             self._draw_measurements(sub_plot, camera.get_all_measurements())
 
-        # patches = [camera.create_xy_patch() for camera in self._cameras]
-        # if len(patches) == 0:
-        #     return
-        #
-        # patches[0].set_label("Камеры")
-        #
-        # for patch in patches:
-        #     sub_plot.add_patch(patch)
+        patches = [camera.create_xy_patch() for camera in self._cameras]
+        if len(patches) == 0:
+            return
+
+        patches[0].set_label("Камеры")
+
+        for patch in patches:
+            sub_plot.add_patch(patch)
 
     @staticmethod
     def _draw_objects(

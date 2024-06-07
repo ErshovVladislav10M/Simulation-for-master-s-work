@@ -22,8 +22,8 @@ class Measurement:
         if not isinstance(other, Measurement):
             return False
 
-        return self.sensor_id == other.sensor_id\
-            and self.cubes == other.cubes\
+        return self.sensor_id == other.sensor_id \
+            and self.cubes == other.cubes \
             and self.t == other.t
 
     def __str__(self):

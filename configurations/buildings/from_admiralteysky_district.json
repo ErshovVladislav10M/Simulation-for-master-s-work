@@ -1,0 +1,14 @@
+{
+    "height_distribution": {
+        "kind": "norm",
+        "data_type": "float",
+        "peek": 20,
+        "scale": 5
+    },
+    "side_distribution": {
+        "kind": "norm",
+        "data_type": "float",
+        "peek": 20,
+        "scale": 5
+    }
+}

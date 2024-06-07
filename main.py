@@ -1,7 +1,6 @@
 import json
 
-from distributions.norm.float_distribution import NormFloatDistribution
-from distributions.uniform.coordinate_distribution import UniformCoordinateDistribution
+from distributions.distribution_utils import get_distribution
 from distributions.uniform.float_distribution import UniformFloatDistribution
 from distributions.uniform.vector_distribution import UniformVectorDistribution
 from generators.aircraft_uav_generator import AircraftUAVGenerator
@@ -14,19 +13,13 @@ from worlds.vector import Vector
 
 
 def get_building_generator(simulation_data) -> CityBuildingGenerator:
-    world_size = simulation_data["world_size"]
-
-    coordinate_distribution = UniformCoordinateDistribution(
-        min_value=Coordinate(-world_size, -world_size, 0),
-        max_value=Coordinate(world_size, world_size, 0)
-    )
-    height_distribution = NormFloatDistribution(peek=20, scale=5)
-    side_distribution = NormFloatDistribution(peek=20, scale=5)
+    with open(simulation_data["building"], "r") as file:
+        building_data = json.load(file)
 
     return CityBuildingGenerator(
-        coordinate_distribution=coordinate_distribution,
-        height_distribution=height_distribution,
-        side_distribution=side_distribution
+        coordinate_distribution=get_distribution(simulation_data["building_coordinate_distribution"]),
+        height_distribution=get_distribution(building_data["height_distribution"]),
+        side_distribution=get_distribution(building_data["side_distribution"])
     )
 
 
@@ -36,23 +29,13 @@ def get_camera_generator(simulation_data, cube_side: float) -> CameraGenerator:
     with open(simulation_data["uav"], "r") as file:
         uav_data = json.load(file)
 
-    world_size = simulation_data["world_size"]
-    coordinate_distribution = UniformCoordinateDistribution(
-        min_value=Coordinate(-world_size, -world_size, 0),
-        max_value=Coordinate(world_size, world_size, 0)
-    )
-    height_distribution = NormFloatDistribution(peek=sensor_data["peek_height"], scale=sensor_data["scale_height"])
-    vector_distribution = UniformVectorDistribution(
-        min_value=Vector(-1, -1, -0.33),
-        max_value=Vector(1, 1, 0)
-    )
     distance = uav_data["detection_distance"]
     distance_distribution = UniformFloatDistribution(min_value=distance, max_value=distance)
 
     return CameraGenerator(
-        coordinate_distribution=coordinate_distribution,
-        height_distribution=height_distribution,
-        vector_distribution=vector_distribution,
+        coordinate_distribution=get_distribution(simulation_data["sensor_coordinate_distribution"]),
+        height_distribution=get_distribution(sensor_data["height_distribution"]),
+        vector_distribution=get_distribution(sensor_data["vector_distribution"]),
         distance_distribution=distance_distribution,
         alpha=sensor_data["alpha"],
         beta=sensor_data["beta"],
@@ -65,12 +48,7 @@ def get_camera_generator(simulation_data, cube_side: float) -> CameraGenerator:
 def get_uav_generator(simulation_data) -> AircraftUAVGenerator:
     world_size = simulation_data["world_size"]
     num_of_steps = simulation_data["num_of_steps"]
-    initial_height = simulation_data["uav_initial_height"]
 
-    coordinate_distribution = UniformCoordinateDistribution(
-        min_value=Coordinate(-world_size, -world_size, initial_height),
-        max_value=Coordinate(world_size, world_size, initial_height)
-    )
     vector_distribution = UniformVectorDistribution(
         min_value=Vector(-1, -1, 0),
         max_value=Vector(1, 1, 0)
@@ -82,7 +60,7 @@ def get_uav_generator(simulation_data) -> AircraftUAVGenerator:
     speed_distribution = UniformFloatDistribution(min_value=speed, max_value=speed)
 
     return AircraftUAVGenerator(
-        start_coordinate_distribution=coordinate_distribution,
+        start_coordinate_distribution=get_distribution(simulation_data["uav_coordinate_distribution"]),
         start_vector_distribution=vector_distribution,
         speed_distribution=speed_distribution,
         keep_start_vector=True,
@@ -129,7 +107,7 @@ def get_exclude_areas() -> list[Area]:
 
 
 def main(cube_side: float):
-    with open("configurations/simulations/for_presentation.json", "r") as file:
+    with open("configurations/simulations/for_presentation2.json", "r") as file:
         simulation_data = json.load(file)
 
     world = CityWorldGenerator(

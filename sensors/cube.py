@@ -47,11 +47,11 @@ class Cube(AbstractWorldObject):
         if not isinstance(other, Cube):
             return False
 
-        return self.coordinate == other.coordinate\
-            and np.isclose(self.side, other.side)\
+        return self.coordinate == other.coordinate \
+            and np.isclose(self.side, other.side) \
             and np.isclose(self.q, other.q)
 
     def __str__(self):
-        return "coordinate = " + str(self.coordinate)\
-            + ", side = " + str(self.side)\
+        return "coordinate = " + str(self.coordinate) \
+            + ", side = " + str(self.side) \
             + ", q = " + str(self.q)
