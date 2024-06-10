@@ -1,0 +1,7 @@
+{
+    "distribution": {
+        "kind": "error",
+        "data_type": "vector"
+    },
+    "num_of_values": 1000
+}

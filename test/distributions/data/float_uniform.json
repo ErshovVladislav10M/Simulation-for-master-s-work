@@ -1,0 +1,9 @@
+{
+    "distribution": {
+        "kind": "uniform",
+        "data_type": "float",
+        "min_value": 10,
+        "max_value": 100
+    },
+    "num_of_values": 1000
+}
