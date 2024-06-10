@@ -25,6 +25,7 @@ def get_building_generator(simulation_data) -> AbstractGenerator:
 def get_sensor_generator(simulation_data, cube_side: float) -> AbstractGenerator:
     with open(simulation_data["sensor"], "r") as file:
         sensor_data = json.load(file)
+
     with open(simulation_data["uav"], "r") as file:
         uav_data = json.load(file)
 
