@@ -1,0 +1,16 @@
+{
+    "alpha": 2.10,
+    "beta": 1.57,
+    "height_distribution": {
+        "kind": "norm",
+        "data_type": "float",
+        "peek": 20,
+        "scale": 5
+    },
+    "direction_vector_distribution": {
+        "kind": "uniform",
+        "data_type": "vector",
+        "min_value": [-1, -1, -0.33],
+        "max_value": [1, 1, 0]
+    }
+}

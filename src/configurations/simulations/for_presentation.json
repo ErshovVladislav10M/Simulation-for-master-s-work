@@ -1,0 +1,30 @@
+{
+    "name": "for_presentation2",
+    "world_size": 200,
+    "num_of_steps": 20,
+    "create_step_images": true,
+    "building": "src/configurations/buildings/from_admiralteysky_district.json",
+    "building_coordinate_distribution": {
+        "kind": "uniform",
+        "data_type": "coordinate",
+        "min_value": [-200, -200, 0],
+        "max_value": [200, 200, 0]
+    },
+    "num_of_buildings": 200,
+    "sensor": "src/configurations/sensors/safe_city_camera.json",
+    "sensor_coordinate_distribution": {
+        "kind": "uniform",
+        "data_type": "coordinate",
+        "min_value": [-200, -200, 0],
+        "max_value": [200, 200, 0]
+    },
+    "num_of_sensors": 10,
+    "uav": "src/configurations/uavs/matrice600.json",
+    "uav_coordinate_distribution": {
+        "kind": "uniform",
+        "data_type": "coordinate",
+        "min_value": [-200, -200, 10],
+        "max_value": [200, 200, 10]
+    },
+    "num_of_uavs": 15
+}
