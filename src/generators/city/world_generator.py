@@ -10,14 +10,13 @@ class CityWorldGenerator(AbstractGenerator):
     def __init__(
         self,
         simulation_data,
-        create_step_images: bool,
         exclude_areas: list[Area],
         building_generator: AbstractGenerator,
         camera_generator: AbstractGenerator,
         uav_generator: AbstractGenerator
     ):
         self._simulation_data = simulation_data
-        self._create_step_images = create_step_images
+        self._create_step_images = simulation_data["create_step_images"]
         self._exclude_areas = exclude_areas
         self._building_generator = building_generator
         self._camera_generator = camera_generator
@@ -25,9 +24,6 @@ class CityWorldGenerator(AbstractGenerator):
 
     def create(self, num_of_objects=1) -> list[CityWorld]:
         world = CityWorld(
-            self._simulation_data["num_of_steps"],
-            self._simulation_data["world_size"],
-            self._create_step_images,
             self._exclude_areas,
             self._simulation_data
         )

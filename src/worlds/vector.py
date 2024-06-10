@@ -42,8 +42,8 @@ class Vector(Coordinate):
     def __mul__(self, other):
         if isinstance(other, Coordinate):
             return self.x * other.x + self.y * other.y + self.z * other.z
-        else:
-            return Vector(self.x * other, self.y * other, self.z * other)
+
+        return Vector(self.x * other, self.y * other, self.z * other)
 
     def __truediv__(self, other: float):
         return Vector(self.x / other, self.y / other, self.z / other)

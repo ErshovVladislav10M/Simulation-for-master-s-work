@@ -12,7 +12,7 @@ from worlds.coodrinate import Coordinate
 
 
 def get_building_generator(simulation_data) -> AbstractGenerator:
-    with open(simulation_data["building"], "r") as file:
+    with open(simulation_data["building"], "r", encoding="utf-8") as file:
         building_data = json.load(file)
 
     return CityBuildingGenerator(
@@ -23,9 +23,9 @@ def get_building_generator(simulation_data) -> AbstractGenerator:
 
 
 def get_sensor_generator(simulation_data, cube_side: float) -> AbstractGenerator:
-    with open(simulation_data["sensor"], "r") as file:
+    with open(simulation_data["sensor"], "r", encoding="utf-8") as file:
         sensor_data = json.load(file)
-    with open(simulation_data["uav"], "r") as file:
+    with open(simulation_data["uav"], "r", encoding="utf-8") as file:
         uav_data = json.load(file)
 
     distance = uav_data["detection_distance"]
@@ -33,19 +33,15 @@ def get_sensor_generator(simulation_data, cube_side: float) -> AbstractGenerator
 
     return CameraGenerator(
         coordinate_distribution=get_distribution(simulation_data["sensor_coordinate_distribution"]),
-        height_distribution=get_distribution(sensor_data["height_distribution"]),
-        direction_vector_distribution=get_distribution(sensor_data["direction_vector_distribution"]),
         distance_distribution=distance_distribution,
-        alpha=sensor_data["alpha"],
-        beta=sensor_data["beta"],
+        sensor_data=sensor_data,
         cube_side=cube_side,
-        initial_q=0.2,
         obsolescence_time=1
     )
 
 
 def get_uav_generator(simulation_data) -> AbstractGenerator:
-    with open(simulation_data["uav"], "r") as file:
+    with open(simulation_data["uav"], "r", encoding="utf-8") as file:
         uav_data = json.load(file)
 
     return AircraftUAVGenerator(
@@ -96,12 +92,11 @@ def get_exclude_areas() -> list[Area]:
 
 
 def main(cube_side: float):
-    with open("src/configurations/simulations/mavic3_h20.json", "r") as file:
+    with open("src/configurations/simulations/mavic3_h20.json", "r", encoding="utf-8") as file:
         simulation_data = json.load(file)
 
     world = CityWorldGenerator(
         simulation_data=simulation_data,
-        create_step_images=simulation_data["create_step_images"],
         # exclude_areas=get_exclude_areas(),
         exclude_areas=[],
         building_generator=get_building_generator(simulation_data),
@@ -113,6 +108,6 @@ def main(cube_side: float):
 
 
 if __name__ == "__main__":
-    for cube_side in [10, 15]:
-        main(cube_side)
+    for side in [10, 15]:
+        main(side)
     # main(5)

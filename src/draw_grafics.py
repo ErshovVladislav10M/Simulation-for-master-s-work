@@ -8,14 +8,14 @@ def get_percent(uav: str, h: int, cube_side: int) -> float:
     actual_uav_file = "results/" + uav + "_h" + str(h) + "/actual_uavs_" + str(cube_side) + ".txt"
     if not os.path.isfile(actual_uav_file):
         return -1
-    with open(actual_uav_file, "r") as file:
-        actual_uavs_counts = [int(count) for count in list(re.split("[\[,\]]", file.readline())) if count != ""]
+    with open(actual_uav_file, "r", encoding="utf-8") as file:
+        actual_uavs_counts = [int(count) for count in list(re.split(r"[\[,\]]", file.readline())) if count != ""]
 
     detected_uav_file = "results/" + uav + "_h" + str(h) + "/detected_uavs_" + str(cube_side) + ".txt"
     if not os.path.isfile(detected_uav_file):
         return -1
-    with open(detected_uav_file, "r") as file:
-        detected_uavs_counts = [int(count) for count in list(re.split("[\[,\]]", file.readline())) if count != ""]
+    with open(detected_uav_file, "r", encoding="utf-8") as file:
+        detected_uavs_counts = [int(count) for count in list(re.split(r"[\[,\]]", file.readline())) if count != ""]
 
     return 100.0 * sum(detected_uavs_counts) / sum(actual_uavs_counts)
 
@@ -27,7 +27,12 @@ def draw(cube_side: int):
     plt.ylim(-2, 102)
     plt.title("Эффективность обнаружения БПЛА")
 
-    uav_names = {"cavok": "Cavok 23 VH", "geran2": "Герань-2", "matrice600": "DJI Matrice 600 Pro", "mavic3": "DJI Mavic 3 Enterprise"}
+    uav_names = {
+        "cavok": "Cavok 23 VH",
+        "geran2": "Герань-2",
+        "matrice600": "DJI Matrice 600 Pro",
+        "mavic3": "DJI Mavic 3 Enterprise"
+    }
     uav_colors = {"cavok": "k", "geran2": "r", "matrice600": "b", "mavic3": "m"}
 
     for uav in ["geran2", "cavok", "matrice600", "mavic3"]:

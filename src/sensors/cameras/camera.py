@@ -17,20 +17,19 @@ class Camera(AbstractSensor):
 
     def __init__(
         self,
-        id: int,
+        identifier: int,
         coordinate: Coordinate,
         direction_vector: Vector,
         distance: float,
-        alpha: float,
-        beta: float,
+        sensor_data: dict,
         cube_side: float,
-        initial_q: float,
         obsolescence_time: int
     ):
         self.coordinate = coordinate
         self.direction_vector = direction_vector
         self.distance = distance
 
+        alpha = sensor_data["alpha"]
         self._alpha_coordinates = [
             self._get_coordinate(alpha=0, beta=0),
             self._get_coordinate(alpha=0.125, beta=0),
@@ -44,6 +43,8 @@ class Camera(AbstractSensor):
             self._get_coordinate(alpha=-0.125 * alpha, beta=0),
             self._get_coordinate(alpha=0, beta=0),
         ]
+
+        beta = sensor_data["beta"]
         self._beta_coordinates = [
             self._get_coordinate(alpha=0, beta=0),
             self._get_coordinate(alpha=0, beta=0.125 * beta),
@@ -60,9 +61,9 @@ class Camera(AbstractSensor):
 
         self.cube_side = cube_side
         self._cube_diagonal = cube_side * math.sqrt(2)
-        self._initial_q = initial_q
+        self._initial_q = sensor_data["initial_q"]
         self._obsolescence_time = obsolescence_time
-        super().__init__(id)
+        super().__init__(identifier)
 
     def _get_coordinate(self, alpha: float, beta: float) -> Coordinate:
         rotated = self.direction_vector.rotate(alpha, beta)
@@ -103,7 +104,7 @@ class Camera(AbstractSensor):
         ]
 
         for uav in uavs_in_area:
-            measurement = Measurement(self.id, self._get_cubes(uav.get_coordinate()), world.actual_step)
+            measurement = Measurement(self.identifier, self._get_cubes(uav.get_coordinate()), world.actual_step)
             self._measurements.append(measurement)
 
     def _get_cubes(self, coordinate: Coordinate) -> list[(Cube, float)]:

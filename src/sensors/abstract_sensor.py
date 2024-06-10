@@ -7,8 +7,8 @@ from src.worlds.abstract_world_object import AbstractWorldObject
 
 class AbstractSensor(AbstractWorldObject):
 
-    def __init__(self, id: int):
-        self.id = id
+    def __init__(self, identifier: int):
+        self.identifier = identifier
         self._measurements: list[Measurement] = []
         super().__init__()
 

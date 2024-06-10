@@ -14,12 +14,17 @@ def merge(im1, im2, im3, im4):
     return im
 
 
-im1 = Image.open("src/results/for_presentation/img/img_1.png")
-im2 = Image.open("src/results/for_presentation/img/img_5.png")
-im3 = Image.open("src/results/for_presentation/img/img_10.png")
-im4 = Image.open("src/results/for_presentation/img/img_15.png")
+def main():
+    im1 = Image.open("src/results/for_presentation/img/img_1.png")
+    im2 = Image.open("src/results/for_presentation/img/img_5.png")
+    im3 = Image.open("src/results/for_presentation/img/img_10.png")
+    im4 = Image.open("src/results/for_presentation/img/img_15.png")
 
-im = merge(im1, im2, im3, im4)
-# im.show()
+    im = merge(im1, im2, im3, im4)
+    # im.show()
 
-im.save(fp="src/results/for_presentation/merging.png")
+    im.save(fp="src/results/for_presentation/merging.png")
+
+
+if __name__ == "__main__":
+    main()

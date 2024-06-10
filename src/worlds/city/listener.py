@@ -24,12 +24,7 @@ class CityListener:
         self._actual_uavs_counts = []
 
     def detect(self, num_steps: int, step: int):
-        cubes = []
-        for camera in self._cameras:
-            for measurement in camera.get_actual_measurements(step):
-                for cube in measurement.cubes:
-                    if cube.q > 0.7:
-                        cubes.append(cube)
+        cubes = self.get_cubes(step)
 
         actual_uavs = [
             uav
@@ -52,9 +47,27 @@ class CityListener:
         self._detected_uavs_counts.append(count_detected_uav)
         self._actual_uavs_counts.append(len(actual_uavs))
         if step == num_steps - 1:
-            f = open(self._path_to_results + "/detected_uavs_" + str(self._cameras[0].cube_side) + ".txt", "w")
+            f = open(
+                self._path_to_results + "/detected_uavs_" + str(self._cameras[0].cube_side) + ".txt",
+                "w",
+                encoding="utf-8"
+            )
             f.write(str(self._detected_uavs_counts))
             f.close()
-            f = open(self._path_to_results + "/actual_uavs_" + str(self._cameras[0].cube_side) + ".txt", "w")
+            f = open(
+                self._path_to_results + "/actual_uavs_" + str(self._cameras[0].cube_side) + ".txt",
+                "w",
+                encoding="utf-8"
+            )
             f.write(str(self._actual_uavs_counts))
             f.close()
+
+    def get_cubes(self, step: int):
+        cubes = []
+        for camera in self._cameras:
+            for measurement in camera.get_actual_measurements(step):
+                for cube in measurement.cubes:
+                    if cube.q > 0.7:
+                        cubes.append(cube)
+
+        return cubes
