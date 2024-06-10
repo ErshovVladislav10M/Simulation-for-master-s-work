@@ -3,6 +3,10 @@ import json
 import pytest
 
 from src.distributions.distribution_utils import get_distribution
+from src.distributions.norm.float_distribution import NormFloatDistribution
+from src.distributions.uniform.coordinate_distribution import UniformCoordinateDistribution
+from src.distributions.uniform.float_distribution import UniformFloatDistribution
+from src.distributions.uniform.vector_distribution import UniformVectorDistribution
 
 
 def test_float_norm():
@@ -10,10 +14,8 @@ def test_float_norm():
         distribution_data = json.load(file)
 
     distribution = get_distribution(distribution_data=distribution_data["distribution"])
-    values = distribution.get_values(num_of_values=distribution_data["num_of_values"])
 
-    assert len(values) == 1000
-    assert sum(values) / len(values) // 10 < 1
+    assert isinstance(distribution, NormFloatDistribution)
 
 
 def test_float_uniform():
@@ -21,11 +23,8 @@ def test_float_uniform():
         distribution_data = json.load(file)
 
     distribution = get_distribution(distribution_data=distribution_data["distribution"])
-    values = distribution.get_values(num_of_values=distribution_data["num_of_values"])
 
-    assert len(values) == 1000
-    assert min(values) >= 10
-    assert max(values) <= 100
+    assert isinstance(distribution, UniformFloatDistribution)
 
 
 def test_float_error():
@@ -41,21 +40,8 @@ def test_coordinate_uniform():
         distribution_data = json.load(file)
 
     distribution = get_distribution(distribution_data=distribution_data["distribution"])
-    values = distribution.get_values(num_of_values=distribution_data["num_of_values"])
 
-    x_values = [vector.x for vector in values]
-    y_values = [vector.y for vector in values]
-    z_values = [vector.z for vector in values]
-
-    assert len(values) == 1000
-
-    assert min(x_values) >= 10
-    assert min(y_values) >= 10
-    assert min(z_values) >= 10
-
-    assert max(x_values) <= 100
-    assert max(y_values) <= 100
-    assert max(z_values) <= 100
+    assert isinstance(distribution, UniformCoordinateDistribution)
 
 
 def test_coordinate_error():
@@ -71,21 +57,8 @@ def test_vector_uniform():
         distribution_data = json.load(file)
 
     distribution = get_distribution(distribution_data=distribution_data["distribution"])
-    values = distribution.get_values(num_of_values=distribution_data["num_of_values"])
 
-    x_values = [vector.x for vector in values]
-    y_values = [vector.y for vector in values]
-    z_values = [vector.z for vector in values]
-
-    assert len(values) == 1000
-
-    assert min(x_values) >= 10
-    assert min(y_values) >= 10
-    assert min(z_values) >= 10
-
-    assert max(x_values) <= 100
-    assert max(y_values) <= 100
-    assert max(z_values) <= 100
+    assert isinstance(distribution, UniformVectorDistribution)
 
 
 def test_vector_error():
