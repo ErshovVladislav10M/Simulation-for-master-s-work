@@ -61,11 +61,11 @@ class UAV(AbstractWorldObject):
     def get_coordinate(self) -> Coordinate | None:
         if not self.is_finished():
             return self.route[self.step]
-        else:
-            return None
+
+        return None
 
     def get_next_coordinate(self) -> Coordinate | None:
         if len(self.route) > self.step + 1:
             return self.route[self.step + 1]
-        else:
-            return None
+
+        return None
