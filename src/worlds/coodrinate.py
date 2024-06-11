@@ -44,20 +44,50 @@ class Coordinate:
                 self.z + other,
             )
 
+        if isinstance(other, int):
+            return Coordinate(
+                self.x + other,
+                self.y + other,
+                self.z + other,
+            )
+
         raise ValueError()
 
     def __sub__(self, other):
-        return Coordinate(
-            self.x - other.x,
-            self.y - other.y,
-            self.z - other.z,
-        )
+        if isinstance(other, Coordinate):
+            return Coordinate(
+                self.x - other.x,
+                self.y - other.y,
+                self.z - other.z,
+            )
+
+        if isinstance(other, float):
+            return Coordinate(
+                self.x - other,
+                self.y - other,
+                self.z - other,
+            )
+
+        if isinstance(other, int):
+            return Coordinate(
+                self.x - other,
+                self.y - other,
+                self.z - other,
+            )
+
+        raise ValueError()
 
     def __mul__(self, other):
         if isinstance(other, Coordinate):
             return self.x * other.x + self.y * other.y + self.z * other.z
 
-        return Coordinate(self.x * other, self.y * other, self.z * other)
+        if isinstance(other, float):
+            return Coordinate(self.x * other, self.y * other, self.z * other)
+
+        if isinstance(other, int):
+            return Coordinate(self.x * other, self.y * other, self.z * other)
+
+        raise ValueError()
 
     def __str__(self) -> str:
         return "[" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + "]"
