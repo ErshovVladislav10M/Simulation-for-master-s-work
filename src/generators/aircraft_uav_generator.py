@@ -1,6 +1,6 @@
 from scipy.stats import norm
 
-from src.distributions.abstract_distribution import AbstractDistribution
+from src.distributions.distribution_utils import get_distribution
 from src.generators.abstract_generator import AbstractGenerator
 from src.uavs.uav import UAV
 from src.worlds.coodrinate import Coordinate
@@ -9,21 +9,13 @@ from src.worlds.vector import Vector
 
 class AircraftUAVGenerator(AbstractGenerator):
 
-    def __init__(
-        self,
-        start_coordinate_distribution: AbstractDistribution,
-        start_direction_vector_distribution: AbstractDistribution,
-        speed_distribution: AbstractDistribution,
-        keep_start_vector: bool,
-        num_of_steps: int,
-        world_size: float
-    ):
-        self._start_coordinate_distribution = start_coordinate_distribution
-        self._start_direction_vector_distribution = start_direction_vector_distribution
-        self._speed_distribution = speed_distribution
+    def __init__(self, simulation_data: dict, uav_data: dict, keep_start_vector: bool):
+        self._start_coordinate_distribution = get_distribution(simulation_data["uav_coordinate_distribution"])
+        self._start_direction_vector_distribution = get_distribution(uav_data["start_direction_vector_distribution"])
+        self._speed_distribution = get_distribution(uav_data["speed_distribution"])
         self._keep_start_vector = keep_start_vector
-        self._num_of_steps = num_of_steps
-        self._world_size = world_size
+        self._num_of_steps = simulation_data["num_of_steps"]
+        self._world_size = simulation_data["world_size"]
 
     def create(self, num_of_objects=1) -> list[UAV]:
         return [

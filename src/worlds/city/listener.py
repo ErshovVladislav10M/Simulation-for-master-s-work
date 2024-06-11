@@ -47,20 +47,19 @@ class CityListener:
         self._detected_uavs_counts.append(count_detected_uav)
         self._actual_uavs_counts.append(len(actual_uavs))
         if step == num_steps - 1:
-            f = open(
+            with open(
                 self._path_to_results + "/detected_uavs_" + str(self._cameras[0].cube_side) + ".txt",
                 "w",
                 encoding="utf-8"
-            )
-            f.write(str(self._detected_uavs_counts))
-            f.close()
-            f = open(
+            ) as file:
+                file.write(str(self._detected_uavs_counts))
+
+            with open(
                 self._path_to_results + "/actual_uavs_" + str(self._cameras[0].cube_side) + ".txt",
                 "w",
                 encoding="utf-8"
-            )
-            f.write(str(self._actual_uavs_counts))
-            f.close()
+            ) as file:
+                file.write(str(self._actual_uavs_counts))
 
     def get_cubes(self, step: int):
         cubes = []

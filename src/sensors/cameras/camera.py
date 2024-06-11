@@ -2,7 +2,7 @@ import math
 
 import matplotlib
 import numpy as np
-from matplotlib.patches import RegularPolygon, PathPatch
+from matplotlib.patches import PathPatch
 from matplotlib.path import Path
 
 from src.measurements.measurement import Measurement

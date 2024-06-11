@@ -6,8 +6,8 @@ import numpy as np
 class Coordinate:
 
     @staticmethod
-    def of(coordinates: list):
-        return Coordinate(coordinates[0], coordinates[1], coordinates[2])
+    def of(coordinate: list):
+        return Coordinate(coordinate[0], coordinate[1], coordinate[2])
 
     def __init__(self, x: float, y: float, z: float = 0):
         self.x = x

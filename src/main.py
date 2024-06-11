@@ -1,14 +1,14 @@
 import json
 
-from distributions.distribution_utils import get_distribution
-from distributions.uniform.float_distribution import UniformFloatDistribution
-from generators.aircraft_uav_generator import AircraftUAVGenerator
-from generators.city.building_generator import CityBuildingGenerator
-from generators.city.camera_generator import CameraGenerator
-from generators.city.world_generator import CityWorldGenerator
+from src.distributions.distribution_utils import get_distribution
+from src.distributions.uniform.float_distribution import UniformFloatDistribution
+from src.generators.aircraft_uav_generator import AircraftUAVGenerator
+from src.generators.city.building_generator import CityBuildingGenerator
+from src.generators.city.camera_generator import CameraGenerator
+from src.generators.city.world_generator import CityWorldGenerator
 from src.generators.abstract_generator import AbstractGenerator
-from worlds.area import Area
-from worlds.coodrinate import Coordinate
+from src.worlds.area import Area
+from src.worlds.coodrinate import Coordinate
 
 
 def get_building_generator(simulation_data) -> AbstractGenerator:
@@ -45,12 +45,9 @@ def get_uav_generator(simulation_data) -> AbstractGenerator:
         uav_data = json.load(file)
 
     return AircraftUAVGenerator(
-        start_coordinate_distribution=get_distribution(simulation_data["uav_coordinate_distribution"]),
-        start_direction_vector_distribution=get_distribution(uav_data["start_direction_vector_distribution"]),
-        speed_distribution=get_distribution(uav_data["speed_distribution"]),
-        keep_start_vector=True,
-        num_of_steps=simulation_data["num_of_steps"],
-        world_size=simulation_data["world_size"]
+        simulation_data=simulation_data,
+        uav_data=uav_data,
+        keep_start_vector=True
     )
 
 
@@ -92,7 +89,7 @@ def get_exclude_areas() -> list[Area]:
 
 
 def main(cube_side: float):
-    with open("src/configurations/simulations/mavic3_h20.json", "r", encoding="utf-8") as file:
+    with open("./configurations/simulations/mavic3_h20.json", "r", encoding="utf-8") as file:
         simulation_data = json.load(file)
 
     world = CityWorldGenerator(
