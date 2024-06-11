@@ -11,29 +11,19 @@ from src.worlds.city.listener import CityListener
 
 class CityWorld(AbstractWorld, ABC):
 
-    def __init__(self, exclude_areas: list[Area], simulation_data):
-        super().__init__(
-            simulation_data["num_of_steps"],
-            simulation_data["world_size"],
-            simulation_data["create_step_images"]
-        )
+    def __init__(self, exclude_areas: list[Area], simulation_data: dict):
+        super().__init__(simulation_data)
+
         self.buildings: list[CityBuilding] = []
         self.cameras: list[Camera] = []
         self.uavs: list[UAV] = []
-        self._exclude_areas = exclude_areas
+        self.exclude_areas = exclude_areas
         self._listener = CityListener(
             self,
-            self.buildings,
-            self.cameras,
-            self.uavs,
             "src/results/" + simulation_data["name"]
         )
         self._drawer = CityDrawer(
             self,
-            self.buildings,
-            self.cameras,
-            self.uavs,
-            self._exclude_areas,
             "src/results/" + simulation_data["name"]
         )
 
@@ -49,7 +39,7 @@ class CityWorld(AbstractWorld, ABC):
 
             self._listener.detect(self._num_of_steps, self.actual_step)
             if self._create_step_images:
-                self._drawer.draw_plane(self.actual_step)
+                self._drawer.draw(self.actual_step)
 
     def rec_messages(self) -> None:
         pass

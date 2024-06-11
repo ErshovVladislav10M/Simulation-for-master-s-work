@@ -1,25 +1,11 @@
 import json
 
-from src.distributions.distribution_utils import get_distribution
 from src.distributions.uniform.float_distribution import UniformFloatDistribution
-from src.generators.aircraft_uav_generator import AircraftUAVGenerator
-from src.generators.city.building_generator import CityBuildingGenerator
+from src.generators.abstract_generator import AbstractGenerator
 from src.generators.city.camera_generator import CameraGenerator
 from src.generators.city.world_generator import CityWorldGenerator
-from src.generators.abstract_generator import AbstractGenerator
 from src.worlds.area import Area
 from src.worlds.coodrinate import Coordinate
-
-
-def get_building_generator(simulation_data) -> AbstractGenerator:
-    with open(simulation_data["building"], "r", encoding="utf-8") as file:
-        building_data = json.load(file)
-
-    return CityBuildingGenerator(
-        coordinate_distribution=get_distribution(simulation_data["building_coordinate_distribution"]),
-        height_distribution=get_distribution(building_data["height_distribution"]),
-        side_distribution=get_distribution(building_data["side_distribution"])
-    )
 
 
 def get_sensor_generator(simulation_data, cube_side: float) -> AbstractGenerator:
@@ -32,22 +18,10 @@ def get_sensor_generator(simulation_data, cube_side: float) -> AbstractGenerator
     distance_distribution = UniformFloatDistribution(min_value=distance, max_value=distance)
 
     return CameraGenerator(
-        coordinate_distribution=get_distribution(simulation_data["sensor_coordinate_distribution"]),
+        simulation_data=simulation_data,
         distance_distribution=distance_distribution,
         sensor_data=sensor_data,
-        cube_side=cube_side,
-        obsolescence_time=1
-    )
-
-
-def get_uav_generator(simulation_data) -> AbstractGenerator:
-    with open(simulation_data["uav"], "r", encoding="utf-8") as file:
-        uav_data = json.load(file)
-
-    return AircraftUAVGenerator(
-        simulation_data=simulation_data,
-        uav_data=uav_data,
-        keep_start_vector=True
+        cube_side=cube_side
     )
 
 
@@ -96,9 +70,7 @@ def main(cube_side: float):
         simulation_data=simulation_data,
         # exclude_areas=get_exclude_areas(),
         exclude_areas=[],
-        building_generator=get_building_generator(simulation_data),
-        camera_generator=get_sensor_generator(simulation_data, cube_side),
-        uav_generator=get_uav_generator(simulation_data)
+        camera_generator=get_sensor_generator(simulation_data, cube_side)
     ).create()[0]
 
     world.run()

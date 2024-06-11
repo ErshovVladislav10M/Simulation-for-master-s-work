@@ -19,6 +19,7 @@
         "max_value": [500, 500, 0]
     },
     "num_of_sensors": 2500,
+    "obsolescence_time": 1,
     "uav": "./configurations/uavs/matrice600.json",
     "uav_coordinate_distribution": {
         "kind": "uniform",

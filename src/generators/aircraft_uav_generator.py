@@ -43,7 +43,7 @@ class AircraftUAVGenerator(AbstractGenerator):
             norm.rvs(loc=peek_alpha, scale=0.1, size=self._num_of_steps),
             norm.rvs(loc=peek_beta, scale=0.1, size=self._num_of_steps)
         ):
-            new_vector = vector.rotate(alpha=alpha, beta=0)
+            new_vector = vector.rotate(alpha=alpha, beta=beta)
             coordinate += new_vector / new_vector.length() * speed
 
             if coordinate.x > self._world_size:

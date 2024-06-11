@@ -1,23 +1,10 @@
-from src.sensors.cameras.camera import Camera
-from src.uavs.uav import UAV
-from src.worlds.abstract_world import AbstractWorld
-from src.worlds.city.building import CityBuilding
-
-
 class CityListener:
 
-    def __init__(
-        self,
-        world: AbstractWorld,
-        buildings: list[CityBuilding],
-        cameras: list[Camera],
-        uavs: list[UAV],
-        path_to_results: str = "results"
-    ):
+    def __init__(self, world, path_to_results: str = "results"):
         self._world = world
-        self._buildings = buildings
-        self._cameras = cameras
-        self._uavs = uavs
+        self._buildings = world.buildings
+        self._cameras = world.cameras
+        self._uavs = world.uavs
 
         self._path_to_results = path_to_results
         self._detected_uavs_counts = []

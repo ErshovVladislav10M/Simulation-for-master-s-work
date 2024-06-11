@@ -2,34 +2,22 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 
 from src.measurements.measurement import Measurement
-from src.sensors.cameras.camera import Camera
-from src.uavs.uav import UAV
-from src.worlds.abstract_world import AbstractWorld
+from src.worlds.abstract_drawer import AbstractDrawer
 from src.worlds.abstract_world_object import AbstractWorldObject
-from src.worlds.area import Area
-from src.worlds.city.building import CityBuilding
 
 
-class CityDrawer:
+class CityDrawer(AbstractDrawer):
 
-    def __init__(
-        self,
-        world: AbstractWorld,
-        buildings: list[CityBuilding],
-        cameras: list[Camera],
-        uavs: list[UAV],
-        exclude_areas: list[Area],
-        path_to_results: str = "results"
-    ):
+    def __init__(self, world, path_to_results: str = "results"):
         self._world = world
-        self._buildings = buildings
-        self._cameras = cameras
-        self._uavs = uavs
-        self._exclude_areas = exclude_areas
+        self._buildings = world.buildings
+        self._sensors = world.cameras
+        self._uavs = world.uavs
+        self._exclude_areas = world.exclude_areas
 
         self._path_to_results = path_to_results
 
-    def draw_plane(self, step: int):
+    def draw(self, step: int):
         figure = plt.figure(figsize=(5, 5))
         # figure = plt.figure(figsize=(8, 8))
 
@@ -42,7 +30,7 @@ class CityDrawer:
         self._draw_objects(sub_plot, self._exclude_areas, "Исключенная область")
         # self._draw_objects(sub_plot, self._buildings, "Buildings")
         self._draw_objects(sub_plot, self._buildings, "Строения")
-        self._draw_cameras(sub_plot)
+        self._draw_sensors(sub_plot)
         # self._draw_objects(sub_plot, self._uavs, "UAVs")
         self._draw_objects(sub_plot, self._uavs, "БПЛА")
 
@@ -80,11 +68,11 @@ class CityDrawer:
                 # patch.set_alpha(1 - 0.33 * (self._world.actual_step - measurement.t))
                 sub_plot.add_patch(patch)
 
-    def _draw_cameras(self, sub_plot: Axes) -> None:
-        for camera in self._cameras:
+    def _draw_sensors(self, sub_plot: Axes) -> None:
+        for camera in self._sensors:
             self._draw_measurements(sub_plot, camera.get_all_measurements())
 
-        patches = [camera.create_xy_patch() for camera in self._cameras]
+        patches = [camera.create_xy_patch() for camera in self._sensors]
         if len(patches) == 0:
             return
 
