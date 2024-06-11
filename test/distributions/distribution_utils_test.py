@@ -10,7 +10,7 @@ from src.distributions.uniform.vector_distribution import UniformVectorDistribut
 
 
 def test_float_norm():
-    with open("./data/float_norm.json", "r") as file:
+    with open("test/distributions/data/float_norm.json", "r") as file:
         distribution_data = json.load(file)
 
     distribution = get_distribution(distribution_data=distribution_data["distribution"])
@@ -19,7 +19,7 @@ def test_float_norm():
 
 
 def test_float_uniform():
-    with open("./data/float_uniform.json", "r") as file:
+    with open("test/distributions/data/float_uniform.json", "r") as file:
         distribution_data = json.load(file)
 
     distribution = get_distribution(distribution_data=distribution_data["distribution"])
@@ -28,7 +28,7 @@ def test_float_uniform():
 
 
 def test_float_error():
-    with open("./data/float_error.json", "r") as file:
+    with open("test/distributions/data/float_error.json", "r") as file:
         distribution_data = json.load(file)
 
     with pytest.raises(ValueError):
@@ -36,7 +36,7 @@ def test_float_error():
 
 
 def test_coordinate_uniform():
-    with open("./data/coordinate_uniform.json", "r") as file:
+    with open("test/distributions/data/coordinate_uniform.json", "r") as file:
         distribution_data = json.load(file)
 
     distribution = get_distribution(distribution_data=distribution_data["distribution"])
@@ -45,7 +45,7 @@ def test_coordinate_uniform():
 
 
 def test_coordinate_error():
-    with open("./data/coordinate_error.json", "r") as file:
+    with open("test/distributions/data/coordinate_error.json", "r") as file:
         distribution_data = json.load(file)
 
     with pytest.raises(ValueError):
@@ -53,7 +53,7 @@ def test_coordinate_error():
 
 
 def test_vector_uniform():
-    with open("./data/vector_uniform.json", "r") as file:
+    with open("test/distributions/data/vector_uniform.json", "r") as file:
         distribution_data = json.load(file)
 
     distribution = get_distribution(distribution_data=distribution_data["distribution"])
@@ -62,7 +62,7 @@ def test_vector_uniform():
 
 
 def test_vector_error():
-    with open("./data/vector_error.json", "r") as file:
+    with open("test/distributions/data/vector_error.json", "r") as file:
         distribution_data = json.load(file)
 
     with pytest.raises(ValueError):
@@ -70,7 +70,7 @@ def test_vector_error():
 
 
 def test_error():
-    with open("./data/error.json", "r") as file:
+    with open("test/distributions/data/error.json", "r") as file:
         distribution_data = json.load(file)
 
     with pytest.raises(ValueError):
