@@ -10,14 +10,14 @@ class CameraGenerator(AbstractGenerator):
         self,
         simulation_data: dict,
         sensor_data: dict,
-        distance_distribution: AbstractDistribution,
+        detection_distance_distribution: AbstractDistribution,
         cube_side: float
     ):
         self._coordinate_distribution = get_distribution(simulation_data["sensor_coordinate_distribution"])
         self._height_distribution = get_distribution(sensor_data["height_distribution"])
         self._sensor_data = sensor_data
         self._direction_vector_distribution = get_distribution(sensor_data["direction_vector_distribution"])
-        self._distance_distribution = distance_distribution
+        self._detection_distance_distribution = detection_distance_distribution
         self._cube_side = cube_side
         self._obsolescence_time = simulation_data["obsolescence_time"]
 
@@ -37,6 +37,6 @@ class CameraGenerator(AbstractGenerator):
                 self._coordinate_distribution.get_values(num_of_objects),
                 self._height_distribution.get_values(num_of_objects),
                 self._direction_vector_distribution.get_values(num_of_objects),
-                self._distance_distribution.get_values(num_of_objects)
+                self._detection_distance_distribution.get_values(num_of_objects)
             )
         ]

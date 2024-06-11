@@ -2,7 +2,7 @@ import json
 
 from src.distributions.distribution_utils import get_distribution
 from src.generators.abstract_generator import AbstractGenerator
-from src.generators.aircraft_uav_generator import AircraftUAVGenerator
+from src.generators.uav_generator import UAVGenerator
 from src.generators.city.building_generator import CityBuildingGenerator
 from src.worlds.abstract_world_object import AbstractWorldObject
 from src.worlds.area import Area
@@ -59,7 +59,7 @@ class CityWorldGenerator(AbstractGenerator):
         with open(self._simulation_data["uav"], "r", encoding="utf-8") as file:
             uav_data = json.load(file)
 
-        return AircraftUAVGenerator(
+        return UAVGenerator(
             simulation_data=self._simulation_data,
             uav_data=uav_data,
             keep_start_vector=True

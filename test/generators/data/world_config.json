@@ -1,0 +1,31 @@
+{
+    "name": "world_config",
+    "world_size": 200,
+    "num_of_steps": 20,
+    "create_step_images": true,
+    "building": "test/generators/data/building_config.json",
+    "building_coordinate_distribution": {
+        "kind": "uniform",
+        "data_type": "coordinate",
+        "min_value": [-200, -200, 0],
+        "max_value": [200, 200, 0]
+    },
+    "num_of_buildings": 200,
+    "sensor": "test/generators/data/camera_config.json",
+    "sensor_coordinate_distribution": {
+        "kind": "uniform",
+        "data_type": "coordinate",
+        "min_value": [-200, -200, 0],
+        "max_value": [200, 200, 0]
+    },
+    "num_of_sensors": 10,
+    "obsolescence_time": 1,
+    "uav": "test/generators/data/uav_config.json",
+    "uav_coordinate_distribution": {
+        "kind": "uniform",
+        "data_type": "coordinate",
+        "min_value": [-200, -200, 10],
+        "max_value": [200, 200, 10]
+    },
+    "num_of_uavs": 15
+}

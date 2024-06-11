@@ -7,9 +7,10 @@ from src.worlds.coodrinate import Coordinate
 from src.worlds.vector import Vector
 
 
-class AircraftUAVGenerator(AbstractGenerator):
+class UAVGenerator(AbstractGenerator):
 
     def __init__(self, simulation_data: dict, uav_data: dict, keep_start_vector: bool):
+        self._type = uav_data["type"]
         self._start_coordinate_distribution = get_distribution(simulation_data["uav_coordinate_distribution"])
         self._start_direction_vector_distribution = get_distribution(uav_data["start_direction_vector_distribution"])
         self._speed_distribution = get_distribution(uav_data["speed_distribution"])
@@ -19,7 +20,7 @@ class AircraftUAVGenerator(AbstractGenerator):
 
     def create(self, num_of_objects=1) -> list[UAV]:
         return [
-            UAV(self._create_route(start_coordinate, start_direction_vector, speed))
+            UAV(self._type, self._create_route(start_coordinate, start_direction_vector, speed))
             for start_coordinate, start_direction_vector, speed in zip(
                 self._start_coordinate_distribution.get_values(num_of_objects),
                 self._start_direction_vector_distribution.get_values(num_of_objects),

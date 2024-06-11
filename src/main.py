@@ -14,12 +14,17 @@ def get_sensor_generator(simulation_data, cube_side: float) -> AbstractGenerator
     with open(simulation_data["uav"], "r", encoding="utf-8") as file:
         uav_data = json.load(file)
 
-    distance = uav_data["detection_distance"]
-    distance_distribution = UniformFloatDistribution(min_value=distance, max_value=distance)
+    uav_type = uav_data["type"]
+    detection_distances = sensor_data["detection_distances"]
+    detection_distance = detection_distances[uav_type]
+    detection_distance_distribution = UniformFloatDistribution(
+        min_value=detection_distance,
+        max_value=detection_distance
+    )
 
     return CameraGenerator(
         simulation_data=simulation_data,
-        distance_distribution=distance_distribution,
+        detection_distance_distribution=detection_distance_distribution,
         sensor_data=sensor_data,
         cube_side=cube_side
     )

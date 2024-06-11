@@ -13,7 +13,8 @@ from src.worlds.vector import Vector
 
 class UAV(AbstractWorldObject):
 
-    def __init__(self, route: list[Coordinate]):
+    def __init__(self, type: str, route: list[Coordinate]):
+        self.type = type
         self.route = route
         self.step = 0
         super().__init__()

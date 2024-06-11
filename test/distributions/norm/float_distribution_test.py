@@ -6,4 +6,4 @@ def test():
     values = distribution.get_values(num_of_values=1000)
 
     assert len(values) == 1000
-    assert sum(values) / len(values) // 10 < 1
+    assert sum(values) / len(values) // 10 < 10

@@ -11,5 +11,5 @@
         "min_value": [-1, -1, 0],
         "max_value": [1, 1, 0]
     },
-    "detection_distance": 150.0
+    "type": "light_middle_range"
 }
